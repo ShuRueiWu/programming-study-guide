@@ -1,5 +1,9 @@
 # 程式學習指南
 
+> 🔗 **線上閱讀（會正常渲染）→ https://shurueiwu.github.io/programming-study-guide/**
+>
+> ⚠️ 請勿用 GitHub 的「檔案頁」或「Raw」開 `.html`——GitHub 基於安全會把使用者 HTML 當純文字（`text/plain` + sandbox）不渲染。請用上面的 **GitHub Pages** 網址。
+
 給初學者的程式**概念 + 速查**整合單頁（繁體中文，技術名詞保留英文）。單一自包含 HTML，無外部相依、可離線開啟、可列印成 PDF。暖米白主題。
 
 ## 內容
@@ -10,10 +14,7 @@
 
 查表區有即時搜尋過濾框；整份可 `Cmd/Ctrl + P` 列印成滿版 PDF。
 
-## 線上預覽（免設定）
+## 其他開啟方式
 
-透過 htmlpreview 直接看渲染後的頁面：
-
-<https://htmlpreview.github.io/?https://github.com/ShuRueiWu/programming-study-guide/blob/main/程式學習指南.html>
-
-或下載 `程式學習指南.html` 後用瀏覽器開啟。
+- 下載 `程式學習指南.html` 後用瀏覽器開（離線可用）
+- htmlpreview 代理渲染：<https://htmlpreview.github.io/?https://github.com/ShuRueiWu/programming-study-guide/blob/main/程式學習指南.html>
