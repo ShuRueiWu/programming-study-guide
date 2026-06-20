@@ -194,14 +194,15 @@ tr.hidden{display:none}
   <a href="#a2">14. 搜尋</a>
   <a href="#a3">15. 排序</a>
   <a href="#a4">16. 遞迴與常見模式</a>
+  <a href="#x6">17. 進階資料結構</a>
+  <a href="#x7">18. 常用演算法實戰地圖</a>
 
-  <h2>第四部 · 進階語言與資料</h2>
-  <a href="#x1">17. JavaScript 基礎</a>
-  <a href="#x2">18. SQL 與資料庫</a>
-  <a href="#x3">19. pandas 實戰</a>
-  <a href="#x4">20. 環境部署與 Docker</a>
-  <a href="#x5">21. HTTP / API 基礎</a>
-  <a href="#x6">22. 進階資料結構</a>
+  <h2>第四部 · 進階主題</h2>
+  <a href="#x1">19. JavaScript 基礎</a>
+  <a href="#x2">20. SQL 與資料庫</a>
+  <a href="#x3">21. pandas 實戰</a>
+  <a href="#x5">22. HTTP / API 基礎</a>
+  <a href="#x4">23. 環境部署與 Docker</a>
 
   <h2>第五部 · 互動計算器</h2>
   <a href="#calc">醫療統計計算器</a>
@@ -214,6 +215,7 @@ tr.hidden{display:none}
   <a href="#t-pyadv">Python 進階語法</a>
   <a href="#t-pyerr">Python 常見錯誤</a>
   <a href="#t-pylib">Python 標準庫</a>
+  <a href="#t-algo">演算法工具</a>
   <a href="#t-js">JavaScript 速查</a>
   <a href="#t-sql">SQL 速查</a>
   <a href="#t-regex">正規表達式 Regex</a>
@@ -641,12 +643,118 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 <!-- 第四部 查表 -->
 <!-- ============================================================= -->
 
+<section id="x6">
+<h2 class="sec"><span class="num">17</span>進階資料結構</h2>
+<p>第 5 章談了 list/dict/set/tuple——日常 80% 夠用。但有些問題用對「形狀」會優雅很多。以下是電腦科學幾個經典結構，重點仍是<strong>「什麼情境該用哪個」</strong>，多數 Python 都有現成實作。</p>
+
+<h3>Stack 堆疊（LIFO 後進先出）</h3>
+<p>像一疊盤子：只能從<strong>頂端</strong>放、從頂端拿，最後放的最先被取。用途：undo/redo、瀏覽器上一頁、括號配對檢查、函式呼叫堆疊（traceback 就是它）。</p>
+<pre><span class="label">python</span><code>stack = []
+stack.append(<span class="str">"A"</span>)   <span class="cmt"># 推入</span>
+stack.append(<span class="str">"B"</span>)
+top = stack.pop()    <span class="cmt"># 取出 "B"（最後進的先出）</span></code></pre>
+
+<h3>Queue 佇列（FIFO 先進先出）</h3>
+<p>像候診排隊：先到先看。用途：任務排程、訊息佇列、廣度優先搜尋 (BFS)。Python 用 <code>collections.deque</code> 兩端操作才高效（list 從頭刪很慢）。</p>
+<pre><span class="label">python</span><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+q = deque()
+q.append(<span class="str">"P1"</span>)      <span class="cmt"># 入隊（尾端）</span>
+first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code></pre>
+<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Stack＝<b>桌上一疊病歷</b>，從最上面拿（最後放的先處理）；Queue＝<b>候診叫號</b>，先掛號先看。</p></div>
+
+<h3>Tree 樹（階層結構）</h3>
+<p>一個根、往下分支、末端是葉，節點不繞回去。到處都是樹：檔案系統資料夾、網頁 DOM、決策樹模型、疾病分類階層（ICD 從大類往下細分）、組織架構。</p>
+
+<h3>Graph 圖（關係網）</h3>
+<p>節點 (node) ＋ 連線 (edge)，能表達任意關係網、可有環。用途：社群人脈、地圖最短路徑、轉診網路、藥物交互作用網、知識圖譜。樹其實是「沒有環的特例圖」。</p>
+
+<h3>Heap 堆積 / 優先佇列</h3>
+<p>永遠能<strong>快速取出最小（或最大）</strong>的那個，但內部不完全排序。用途：優先處理（檢傷分級）、找 Top-K、Dijkstra 最短路徑。Python 用 <code>heapq</code>。</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>結構</th><th>關鍵特性</th><th>典型用途</th><th>Python</th></tr></thead>
+<tbody>
+<tr><td>Stack</td><td>後進先出 LIFO</td><td>undo、括號配對、DFS</td><td><code>list</code> append/pop</td></tr>
+<tr><td>Queue</td><td>先進先出 FIFO</td><td>排程、BFS</td><td><code>collections.deque</code></td></tr>
+<tr><td>Hash table</td><td>O(1) 查找</td><td>查找、計數、去重</td><td><code>dict</code> / <code>set</code></td></tr>
+<tr><td>Tree</td><td>階層、無環</td><td>檔案系統、分類階層</td><td>自建 / 套件</td></tr>
+<tr><td>Graph</td><td>任意關係、可有環</td><td>路徑、人脈、交互網</td><td><code>networkx</code></td></tr>
+<tr><td>Heap</td><td>快速取極值</td><td>優先佇列、Top-K</td><td><code>heapq</code></td></tr>
+</tbody>
+</table></div>
+<div class="box tip"><div class="t">✓ 初學者重點</div><p>不必自己刻這些（學習除外）。重點是<strong>看到問題能聯想到形狀</strong>：「要 undo」→ stack；「公平排隊」→ queue；「反覆查找」→ hash；「找最高優先」→ heap；「關係網路」→ graph。挑對結構，演算法常常就自然浮現。</p></div>
+</section>
+
+<section id="x7">
+<h2 class="sec"><span class="num">18</span>常用演算法實戰地圖</h2>
+<p>學演算法的目的是<strong>判斷力</strong>——看到問題能對應「該用哪招、會不會爆複雜度」，而不是重造輪子（多數有現成函式）。本章把第 13–16、22 章的招式整合成一張<strong>「問題型態 → 解法」對照</strong>，例子橫跨資料、投資、自動化、文字等領域。</p>
+
+<h3>問題型態 → 用哪招（決策表）</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>當你看到…</th><th>用這招</th><th>例子（不限醫療）</th><th>Python</th></tr></thead>
+<tbody>
+<tr><td>已排序、要快速找/插入</td><td>二分搜尋</td><td>價格序列找門檻、排行榜插入位置</td><td><code>bisect</code></td></tr>
+<tr><td>要排序、規則複雜</td><td>排序 + key</td><td>持股按報酬、檔案按時間、多鍵排序</td><td><code>sorted(key=)</code></td></tr>
+<tr><td>反覆「在不在 / 去重 / 比兩份名單」</td><td>雜湊 / 集合</td><td>新增/移除的股票、URL 去重、計票</td><td><code>set</code> / <code>dict</code></td></tr>
+<tr><td>已排序找配對 / 合併</td><td>雙指標</td><td>兩數和=目標、合併兩排序清單對帳</td><td>手寫</td></tr>
+<tr><td>連續區間統計</td><td>滑動視窗 / 前綴和</td><td>N 日移動平均、限速視窗內請求數、區間加總</td><td><code>deque</code> / 累加</td></tr>
+<tr><td>「永遠取最大/最小 K 個」</td><td>堆積 Heap</td><td>Top-10 成交量、即時優先佇列</td><td><code>heapq</code></td></tr>
+<tr><td>走訪樹/圖、找路徑/連通</td><td>BFS / DFS</td><td>資料夾樹、相依關係、最短步數</td><td>手寫 + <code>deque</code></td></tr>
+<tr><td>「最佳化、有重疊子問題」</td><td>動態規劃 DP</td><td>編輯距離、最佳買賣區間、資源配置</td><td><code>@lru_cache</code></td></tr>
+<tr><td>每步取當下最好</td><td>貪婪 Greedy</td><td>找零錢、會議室排程</td><td>手寫</td></tr>
+<tr><td>名稱/字串不完全相同要對上</td><td>模糊比對</td><td>對帳兩邊名稱、去重相似條目</td><td><code>rapidfuzz</code></td></tr>
+</tbody>
+</table></div>
+
+<h3>圖與樹走訪：BFS / DFS</h3>
+<p>很多問題本質是「節點 + 連線」：資料夾樹、網頁連結、相依關係、社群、地圖。兩種走法：</p>
+<ul>
+<li><strong>BFS（廣度優先）</strong>：一層層擴散，第一次到達即<strong>最短步數</strong>。用 queue。</li>
+<li><strong>DFS（深度優先）</strong>：一路走到底再回頭。用遞迴或 stack。適合「窮舉所有路徑 / 偵測環」。</li>
+</ul>
+<pre><span class="label">python</span><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+<span class="kw">def</span> <span class="fn">bfs</span>(graph, start):
+    seen, q = {start}, deque([start])
+    <span class="kw">while</span> q:
+        node = q.popleft()
+        <span class="kw">for</span> nxt <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> nxt <span class="kw">not</span> <span class="kw">in</span> seen:
+                seen.add(nxt); q.append(nxt)
+    <span class="kw">return</span> seen</code></pre>
+<div class="box info"><div class="t">💡 進階圖演算法（懂概念即可，多用套件 networkx）</div>
+<p><b>Dijkstra</b>：加權最短路徑（地圖最低成本）。<b>拓撲排序</b>：排相依順序（build 順序、課程先修、任務 DAG）。<b>Union-Find</b>：快速判斷連通/分群（朋友圈、偵測環）。</p></div>
+
+<h3>動態規劃 (DP)：用記憶換重算</h3>
+<p>當大問題能拆成<strong>會重複出現的小問題</strong>，就把算過的存起來別重算。最簡單的入門法：寫好遞迴，再加 <code>@lru_cache</code> 自動記憶化。</p>
+<pre><span class="label">python</span><code><span class="kw">from</span> functools <span class="kw">import</span> lru_cache
+<span class="fn">@lru_cache</span>(maxsize=None)
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">return</span> n <span class="kw">if</span> n &lt; 2 <span class="kw">else</span> <span class="fn">fib</span>(n-1) + <span class="fn">fib</span>(n-2)
+<span class="cmt"># 沒加 cache：O(2ⁿ) 爆炸；加了：O(n)</span></code></pre>
+<p>經典 DP 題型：編輯距離（模糊比對的底層）、最大子陣列和（最佳買賣區間）、背包問題（預算下選最大價值）、爬樓梯/路徑計數。</p>
+
+<h3>應用 / 資料科學演算法（現成套件）</h3>
+<p>這類你幾乎不會手刻，重點是知道「要分析什麼 → 用哪個」。例子同樣不限醫療。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>目的</th><th>演算法</th><th>例子</th><th>Python</th></tr></thead>
+<tbody>
+<tr><td>名稱/字串模糊對上</td><td>編輯距離 / token 比對</td><td>對帳、客戶名去重、商品比對</td><td><code>rapidfuzz</code></td></tr>
+<tr><td>把資料分成自然群</td><td>k-means / 階層分群</td><td>客群、股票風格分群</td><td><code>sklearn.cluster</code></td></tr>
+<tr><td>高維資料降維/視覺化</td><td>PCA / UMAP</td><td>特徵壓縮、探索結構</td><td><code>sklearn.decomposition</code></td></tr>
+<tr><td>預測數值 / 找因子</td><td>線性 / 邏輯迴歸</td><td>銷售預測、風險因子</td><td><code>statsmodels</code> / <code>sklearn</code></td></tr>
+<tr><td>分類 / 重要特徵</td><td>決策樹 / 隨機森林</td><td>分類、特徵重要度</td><td><code>sklearn.ensemble</code></td></tr>
+<tr><td>趨勢 / 季節性 / 預測</td><td>時間序列（MA、ARIMA）</td><td>股價、流量、用量趨勢</td><td><code>statsmodels.tsa</code></td></tr>
+</tbody>
+</table></div>
+<div class="box tip"><div class="t">✓ 一句總結</div><p>演算法學「<strong>判斷該用哪招、會不會爆複雜度</strong>」；實作優先找現成函式（<code>bisect</code>／<code>heapq</code>／<code>functools</code>／<code>rapidfuzz</code>／<code>sklearn</code>）。手刻只在學習與面試時做。</p></div>
+</section>
+
 <!-- ============================================================= -->
-<!-- 第四部 進階語言與資料 -->
+<!-- 第四部 進階主題 -->
 <!-- ============================================================= -->
 
 <section id="x1">
-<h2 class="sec"><span class="num">17</span>JavaScript 基礎</h2>
+<h2 class="sec"><span class="num">19</span>JavaScript 基礎</h2>
 <p>HTML 是<strong>骨架</strong>、CSS 是<strong>外觀</strong>、<strong>JavaScript (JS)</strong> 是<strong>行為</strong>——讓網頁能反應、運算、改變內容。它是唯一能在瀏覽器原生執行的程式語言（你這份學習指南的搜尋過濾、目錄高亮就是 JS 做的）。透過 Node.js，它也能跑後端。</p>
 
 <h3>把 JS 放進網頁</h3>
@@ -691,7 +799,7 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </section>
 
 <section id="x2">
-<h2 class="sec"><span class="num">18</span>SQL 與資料庫基礎</h2>
+<h2 class="sec"><span class="num">20</span>SQL 與資料庫基礎</h2>
 <p>當資料量大、要長期保存、多人共用、複雜查詢時，就需要<strong>資料庫</strong>。最主流的是<strong>關聯式資料庫 (Relational DB)</strong>：資料存在一張張<strong>表 (table)</strong> 裡，每<strong>列 (row)</strong> 是一筆紀錄、每<strong>欄 (column)</strong> 是一個欄位，用<strong>主鍵 (primary key)</strong> 唯一識別每筆。<strong>SQL</strong> 就是查詢這些表的語言。</p>
 
 <h3>最核心的查詢：SELECT</h3>
@@ -719,7 +827,7 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </section>
 
 <section id="x3">
-<h2 class="sec"><span class="num">19</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
+<h2 class="sec"><span class="num">21</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
 <p><code>pandas</code> 是 Python 處理表格資料的主力。核心物件是 <strong>DataFrame</strong>——就是「程式裡的 Excel 表」。以下是分析一份檢驗值 CSV 的<strong>完整典型流程</strong>。</p>
 
 <h4>① 讀檔與初探</h4>
@@ -759,37 +867,8 @@ merged.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, ind
 <p>這類檔含 PHI（姓名、病歷號、完整日期）。分析前先<strong>去識別化</strong>、與可還原對照表分開存；<strong>絕不</strong>上傳到公開倉庫或未授權的外部服務。詳見下方醫療查表「去識別化」段。</p></div>
 </section>
 
-<section id="x4">
-<h2 class="sec"><span class="num">20</span>環境部署與 Docker</h2>
-<p><strong>部署 (deployment)</strong> 是把程式從「我的電腦能跑」變成「在伺服器或別人電腦也能穩定跑」。最惱人的經典問題是 <em>"works on my machine"</em>——在你電腦好好的，換台機器卻壞了。原因幾乎都是<strong>環境差異</strong>：作業系統、套件版本、系統函式庫、設定不一致。</p>
-
-<h3>Docker：把整個環境打包帶走</h3>
-<p><strong>Docker</strong> 把「程式 + 所有相依套件 + 執行環境」整包封進一個<strong>容器 (container)</strong>，到任何機器都用同一份環境跑，徹底消除環境差異。</p>
-<div class="tablewrap"><table>
-<thead><tr><th>概念</th><th>意思</th><th>類比</th></tr></thead>
-<tbody>
-<tr><td><strong>image 映像檔</strong></td><td>唯讀的環境模板（藍圖）</td><td>第 6 章的 <b>class 藍圖</b></td></tr>
-<tr><td><strong>container 容器</strong></td><td>依 image 跑起來的執行實例</td><td>第 6 章的 <b>instance 實例</b></td></tr>
-<tr><td><strong>Dockerfile</strong></td><td>描述「如何建出這個環境」的食譜</td><td>SOP 操作手冊</td></tr>
-<tr><td><strong>registry</strong></td><td>存放/分享 image 的倉庫（如 Docker Hub）</td><td>第 8 章的 <b>PyPI</b></td></tr>
-</tbody>
-</table></div>
-
-<h3>Dockerfile 長什麼樣</h3>
-<pre><span class="label">dockerfile</span><code><span class="kw">FROM</span> python:3.13          <span class="cmt"># 以官方 Python 3.13 為基底</span>
-<span class="kw">WORKDIR</span> /app              <span class="cmt"># 容器內的工作目錄</span>
-<span class="kw">COPY</span> . .                  <span class="cmt"># 把專案檔複製進去</span>
-<span class="kw">RUN</span> pip install -r requirements.txt  <span class="cmt"># build 時安裝相依</span>
-<span class="kw">CMD</span> [<span class="str">"python"</span>, <span class="str">"app.py"</span>]   <span class="cmt"># 容器啟動時執行</span></code></pre>
-
-<div class="box info"><div class="t">💡 Docker vs 虛擬環境 (venv)</div>
-<p><b>venv</b>（第 8 章）只隔離 <b>Python 套件</b>；<b>Docker</b> 隔離到 <b>整個作業系統層級</b>的環境（系統函式庫、設定、甚至 OS 版本）。小型個人腳本用 venv 就夠；要交付/上線/跨機器一致，才需要 Docker。</p></div>
-<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Docker 像一間<b>整套打包好的行動手術室貨櫃</b>——不管推到哪間醫院，器械、無菌規格、電力、動線全都一致，不依賴當地環境。venv 則只是「自備一包無菌器械」，手術室本身還是用人家的。</p></div>
-<div class="box tip"><div class="t">✓ 初學者定位</div><p>Docker 是<b>概念先懂、需要時再用</b>的工具。你不必為了學 Python 先學 Docker；但當你想把一個分析工具/網站交給別人跑、或部署到雲端時，它能省下大量「為什麼你那邊跑不起來」的麻煩。常用指令見第六部查表。</p></div>
-</section>
-
 <section id="x5">
-<h2 class="sec"><span class="num">21</span>HTTP / API 與資料交換</h2>
+<h2 class="sec"><span class="num">22</span>HTTP / API 與資料交換</h2>
 <p>現代軟體很少單打獨鬥——它們靠 <strong>API (Application Programming Interface)</strong> 互相要資料、送指令。你的 Telegram bot、抓股價腳本、webhook 自動化，本質都是在打 API。懂這層，程式就能「對外界開口」。</p>
 
 <h3>API 是什麼</h3>
@@ -836,47 +915,40 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 <div class="box med"><div class="t">🩺 醫療關聯</div><p class="analogy">醫療界的 <b>FHIR</b> 標準（見醫療查表）就是一套 REST API——用 GET 查病人、POST 建立紀錄、回傳 JSON。懂了通用 API，就懂了 FHIR 的骨架。</p></div>
 </section>
 
-<section id="x6">
-<h2 class="sec"><span class="num">22</span>進階資料結構</h2>
-<p>第 5 章談了 list/dict/set/tuple——日常 80% 夠用。但有些問題用對「形狀」會優雅很多。以下是電腦科學幾個經典結構，重點仍是<strong>「什麼情境該用哪個」</strong>，多數 Python 都有現成實作。</p>
+<section id="x4">
+<h2 class="sec"><span class="num">23</span>環境部署與 Docker</h2>
+<p><strong>部署 (deployment)</strong> 是把程式從「我的電腦能跑」變成「在伺服器或別人電腦也能穩定跑」。最惱人的經典問題是 <em>"works on my machine"</em>——在你電腦好好的，換台機器卻壞了。原因幾乎都是<strong>環境差異</strong>：作業系統、套件版本、系統函式庫、設定不一致。</p>
 
-<h3>Stack 堆疊（LIFO 後進先出）</h3>
-<p>像一疊盤子：只能從<strong>頂端</strong>放、從頂端拿，最後放的最先被取。用途：undo/redo、瀏覽器上一頁、括號配對檢查、函式呼叫堆疊（traceback 就是它）。</p>
-<pre><span class="label">python</span><code>stack = []
-stack.append(<span class="str">"A"</span>)   <span class="cmt"># 推入</span>
-stack.append(<span class="str">"B"</span>)
-top = stack.pop()    <span class="cmt"># 取出 "B"（最後進的先出）</span></code></pre>
-
-<h3>Queue 佇列（FIFO 先進先出）</h3>
-<p>像候診排隊：先到先看。用途：任務排程、訊息佇列、廣度優先搜尋 (BFS)。Python 用 <code>collections.deque</code> 兩端操作才高效（list 從頭刪很慢）。</p>
-<pre><span class="label">python</span><code><span class="kw">from</span> collections <span class="kw">import</span> deque
-q = deque()
-q.append(<span class="str">"P1"</span>)      <span class="cmt"># 入隊（尾端）</span>
-first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code></pre>
-<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Stack＝<b>桌上一疊病歷</b>，從最上面拿（最後放的先處理）；Queue＝<b>候診叫號</b>，先掛號先看。</p></div>
-
-<h3>Tree 樹（階層結構）</h3>
-<p>一個根、往下分支、末端是葉，節點不繞回去。到處都是樹：檔案系統資料夾、網頁 DOM、決策樹模型、疾病分類階層（ICD 從大類往下細分）、組織架構。</p>
-
-<h3>Graph 圖（關係網）</h3>
-<p>節點 (node) ＋ 連線 (edge)，能表達任意關係網、可有環。用途：社群人脈、地圖最短路徑、轉診網路、藥物交互作用網、知識圖譜。樹其實是「沒有環的特例圖」。</p>
-
-<h3>Heap 堆積 / 優先佇列</h3>
-<p>永遠能<strong>快速取出最小（或最大）</strong>的那個，但內部不完全排序。用途：優先處理（檢傷分級）、找 Top-K、Dijkstra 最短路徑。Python 用 <code>heapq</code>。</p>
-
+<h3>Docker：把整個環境打包帶走</h3>
+<p><strong>Docker</strong> 把「程式 + 所有相依套件 + 執行環境」整包封進一個<strong>容器 (container)</strong>，到任何機器都用同一份環境跑，徹底消除環境差異。</p>
 <div class="tablewrap"><table>
-<thead><tr><th>結構</th><th>關鍵特性</th><th>典型用途</th><th>Python</th></tr></thead>
+<thead><tr><th>概念</th><th>意思</th><th>類比</th></tr></thead>
 <tbody>
-<tr><td>Stack</td><td>後進先出 LIFO</td><td>undo、括號配對、DFS</td><td><code>list</code> append/pop</td></tr>
-<tr><td>Queue</td><td>先進先出 FIFO</td><td>排程、BFS</td><td><code>collections.deque</code></td></tr>
-<tr><td>Hash table</td><td>O(1) 查找</td><td>查找、計數、去重</td><td><code>dict</code> / <code>set</code></td></tr>
-<tr><td>Tree</td><td>階層、無環</td><td>檔案系統、分類階層</td><td>自建 / 套件</td></tr>
-<tr><td>Graph</td><td>任意關係、可有環</td><td>路徑、人脈、交互網</td><td><code>networkx</code></td></tr>
-<tr><td>Heap</td><td>快速取極值</td><td>優先佇列、Top-K</td><td><code>heapq</code></td></tr>
+<tr><td><strong>image 映像檔</strong></td><td>唯讀的環境模板（藍圖）</td><td>第 6 章的 <b>class 藍圖</b></td></tr>
+<tr><td><strong>container 容器</strong></td><td>依 image 跑起來的執行實例</td><td>第 6 章的 <b>instance 實例</b></td></tr>
+<tr><td><strong>Dockerfile</strong></td><td>描述「如何建出這個環境」的食譜</td><td>SOP 操作手冊</td></tr>
+<tr><td><strong>registry</strong></td><td>存放/分享 image 的倉庫（如 Docker Hub）</td><td>第 8 章的 <b>PyPI</b></td></tr>
 </tbody>
 </table></div>
-<div class="box tip"><div class="t">✓ 初學者重點</div><p>不必自己刻這些（學習除外）。重點是<strong>看到問題能聯想到形狀</strong>：「要 undo」→ stack；「公平排隊」→ queue；「反覆查找」→ hash；「找最高優先」→ heap；「關係網路」→ graph。挑對結構，演算法常常就自然浮現。</p></div>
+
+<h3>Dockerfile 長什麼樣</h3>
+<pre><span class="label">dockerfile</span><code><span class="kw">FROM</span> python:3.13          <span class="cmt"># 以官方 Python 3.13 為基底</span>
+<span class="kw">WORKDIR</span> /app              <span class="cmt"># 容器內的工作目錄</span>
+<span class="kw">COPY</span> . .                  <span class="cmt"># 把專案檔複製進去</span>
+<span class="kw">RUN</span> pip install -r requirements.txt  <span class="cmt"># build 時安裝相依</span>
+<span class="kw">CMD</span> [<span class="str">"python"</span>, <span class="str">"app.py"</span>]   <span class="cmt"># 容器啟動時執行</span></code></pre>
+
+<div class="box info"><div class="t">💡 Docker vs 虛擬環境 (venv)</div>
+<p><b>venv</b>（第 8 章）只隔離 <b>Python 套件</b>；<b>Docker</b> 隔離到 <b>整個作業系統層級</b>的環境（系統函式庫、設定、甚至 OS 版本）。小型個人腳本用 venv 就夠；要交付/上線/跨機器一致，才需要 Docker。</p></div>
+<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Docker 像一間<b>整套打包好的行動手術室貨櫃</b>——不管推到哪間醫院，器械、無菌規格、電力、動線全都一致，不依賴當地環境。venv 則只是「自備一包無菌器械」，手術室本身還是用人家的。</p></div>
+<div class="box tip"><div class="t">✓ 初學者定位</div><p>Docker 是<b>概念先懂、需要時再用</b>的工具。你不必為了學 Python 先學 Docker；但當你想把一個分析工具/網站交給別人跑、或部署到雲端時，它能省下大量「為什麼你那邊跑不起來」的麻煩。常用指令見第六部查表。</p></div>
 </section>
+
+
+
+
+
+
 
 <!-- ============================================================= -->
 <!-- 第五部 互動計算器 -->
@@ -1332,6 +1404,45 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 <tr><td><code>json.load(fp) / json.dump(obj, fp)</code></td><td>檔案讀 / 寫</td></tr>
 <tr><td><code>csv.DictReader(fp)</code></td><td>每列讀成 dict</td></tr>
 <tr><td><code>csv.DictWriter(fp, fieldnames=[...])</code></td><td>把 dict 寫成 CSV</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== ALGO TOOLS ===== -->
+<div class="lookup-block" id="t-algo">
+<h3>演算法工具速查（Python）</h3>
+
+<h4>bisect（有序序列二分）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>bisect.bisect_left(a, x)</code></td><td>x 應插入位置的左邊界索引</td></tr>
+<tr><td><code>bisect.bisect_right(a, x)</code></td><td>右邊界索引</td></tr>
+<tr><td><code>bisect.insort(a, x)</code></td><td>插入並保持排序</td></tr>
+<tr><td colspan="2">用途：排行榜插入、找門檻落在哪個區間</td></tr>
+</tbody></table></div>
+
+<h4>heapq（最小堆 / 優先佇列）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>heapq.heappush(h, x)</code></td><td>推入元素</td></tr>
+<tr><td><code>heapq.heappop(h)</code></td><td>取出最小元素</td></tr>
+<tr><td><code>heapq.nlargest(k, it) / nsmallest(k, it)</code></td><td>Top-K 最大 / 最小</td></tr>
+<tr><td><code>heapq.heapify(lst)</code></td><td>原地把 list 變成堆</td></tr>
+<tr><td colspan="2">取最大堆：推入 <code>-x</code>，或直接用 nlargest</td></tr>
+</tbody></table></div>
+
+<h4>functools</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>@lru_cache(maxsize=None)</code></td><td>記憶化（DP 入門神器，遞迴秒變高效）</td></tr>
+<tr><td><code>@cache</code></td><td>同上簡寫（Python 3.9+）</td></tr>
+<tr><td><code>reduce(fn, seq, init)</code></td><td>累積歸約成單一值</td></tr>
+<tr><td><code>partial(fn, x)</code></td><td>固定部分參數產生新函式</td></tr>
+</tbody></table></div>
+
+<h4>常用演算法 / 數值套件</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>套件</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>rapidfuzz</code></td><td>高速模糊字串比對（<code>fuzz.ratio</code>），對帳/去重</td></tr>
+<tr><td><code>sklearn</code></td><td>分群 / 降維 / 迴歸 / 分類 / ROC</td></tr>
+<tr><td><code>statsmodels</code></td><td>統計建模、時間序列 (tsa)</td></tr>
+<tr><td><code>networkx</code></td><td>圖：最短路徑、連通、拓撲排序</td></tr>
+<tr><td><code>numpy</code></td><td>向量化數值運算（演算法加速基礎）</td></tr>
 </tbody></table></div>
 </div>
 
