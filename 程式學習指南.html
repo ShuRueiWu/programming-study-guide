@@ -1,0 +1,2036 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>程式學習指南 — 觀念 · 流程 · 演算法 · 查表</title>
+<style>
+:root{
+  --bg:#faf8f4; --text:#3c3a35; --text-2:#6e6557; --h1:#2f2a22;
+  --border:#e6ddcf; --border-dash:#ece3d4; --card:#fffdf9;
+  --blue:#3a6aa8; --blue-bg:#f5f7fc; --blue-bd:#dce1ec;
+  --green:#4d8a3f; --green-bg:#f5f8ee; --green-bd:#dbe6cb;
+  --teal-fg:#0e7280; --teal-bg:#e6f1f0;
+  --gchip-fg:#5a7d22; --gchip-bg:#f0f3e0;
+  --amber:#b5710a;
+  --warn-bg:#fdf2e0; --warn-bd:#ecd29c; --warn-fg:#8a6a2b; --warn-strong:#a87916;
+  --badge-bg:#f2c95f; --badge-fg:#3a2c08;
+  --code-bg:#f7f2e8; --code-bd:#ece2d0;
+  --shadow:0 1px 3px rgba(90,70,40,0.07);
+  --shadow-2:0 4px 14px rgba(90,70,40,0.10);
+  --sidebar-w:280px;
+  --mono:"SF Mono",ui-monospace,"JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--text);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+
+/* ---------- Layout ---------- */
+.layout{display:flex;align-items:flex-start}
+.sidebar{
+  width:var(--sidebar-w);flex:0 0 var(--sidebar-w);position:sticky;top:0;height:100vh;
+  overflow-y:auto;padding:22px 16px 60px;border-right:1px solid var(--border);
+  background:linear-gradient(180deg,#fbf9f4,#f7f3ec);
+}
+.sidebar h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:18px 8px 6px}
+.sidebar .brand{font-size:18px;font-weight:800;color:var(--h1);padding:4px 8px;line-height:1.4}
+.sidebar .brand small{display:block;font-size:12px;font-weight:500;color:var(--text-2);letter-spacing:.02em}
+.sidebar a{display:block;color:var(--text-2);text-decoration:none;font-size:14px;padding:5px 10px;border-radius:7px;border-left:3px solid transparent;transition:all .15s}
+.sidebar a:hover{background:var(--card);color:var(--text)}
+.sidebar a.active{background:var(--blue-bg);color:var(--blue);border-left-color:var(--blue);font-weight:600}
+
+.main{flex:1 1 auto;min-width:0;max-width:920px;margin:0 auto;padding:36px 40px 120px}
+
+/* ---------- Typography ---------- */
+h1.page{font-size:30px;color:var(--h1);margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+.subtitle{color:var(--text-2);font-size:15px;margin:0 0 28px}
+section{scroll-margin-top:18px;margin-bottom:14px;padding-top:8px}
+h2.sec{font-size:24px;color:var(--h1);margin:46px 0 4px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--border)}
+h2.sec .num{color:var(--amber);font-weight:800;margin-right:8px}
+h3{font-size:19px;color:var(--h1);margin:30px 0 8px;font-weight:700}
+h4{font-size:16px;color:var(--blue);margin:20px 0 6px;font-weight:700}
+p{margin:10px 0}
+.lead{color:var(--text-2)}
+strong{color:var(--h1)}
+ul,ol{padding-left:22px;margin:10px 0}
+li{margin:5px 0}
+a.inline{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-bd)}
+hr{border:none;border-top:1px dashed var(--border-dash);margin:28px 0}
+
+/* ---------- Inline code / chips ---------- */
+code{font-family:var(--mono);font-size:.88em;background:var(--teal-bg);color:var(--teal-fg);padding:1.5px 6px;border-radius:5px;word-break:break-word}
+code.g{background:var(--gchip-bg);color:var(--gchip-fg)}
+
+/* ---------- Code blocks ---------- */
+pre{background:var(--code-bg);border:1px solid var(--code-bd);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:12px 0;box-shadow:var(--shadow);position:relative}
+pre code{background:none;color:var(--text);padding:0;font-size:13.5px;line-height:1.65;display:block}
+pre .cmt{color:#9a8f7a;font-style:italic}
+pre .kw{color:#9a5d2a}
+pre .str{color:#4d8a3f}
+pre .fn{color:#3a6aa8}
+pre .label{position:absolute;top:0;right:0;font-family:var(--sans);font-size:10.5px;letter-spacing:.06em;color:var(--text-2);background:#efe7d6;padding:2px 9px;border-radius:0 9px 0 9px;text-transform:uppercase}
+
+/* ---------- Callouts ---------- */
+.box{border-radius:10px;padding:13px 16px;margin:14px 0;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow)}
+.box .t{font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:7px}
+.box p:first-of-type{margin-top:2px}.box p:last-child{margin-bottom:0}
+.box.tip{background:var(--green-bg);border-color:var(--green-bd)} .box.tip .t{color:var(--green)}
+.box.info{background:var(--blue-bg);border-color:var(--blue-bd)} .box.info .t{color:var(--blue)}
+.box.warn{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn-fg)} .box.warn .t{color:var(--warn-strong)}
+.box.med{background:#fcf6fa;border-color:#ecd9e6} .box.med .t{color:#9a4775}
+.analogy{font-size:14.5px}
+.analogy b{color:var(--amber)}
+
+/* ---------- Tables ---------- */
+.tablewrap{overflow-x:auto;margin:14px 0;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card)}
+thead th{background:#f3ece0;color:var(--h1);text-align:left;padding:9px 13px;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0}
+tbody td{padding:8px 13px;border-bottom:1px solid var(--border-dash);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:#fdfbf6}
+tbody tr:hover{background:var(--blue-bg)}
+td code,th code{font-size:12.5px;white-space:nowrap}
+
+/* ---------- Search box ---------- */
+.searchbar{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 70%,rgba(250,248,244,0));padding:14px 0 16px;margin-bottom:6px}
+#filter{width:100%;font-family:var(--sans);font-size:15px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);box-shadow:var(--shadow);outline:none}
+#filter:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-bg)}
+#filter::placeholder{color:#b3a892}
+.hint{font-size:12.5px;color:var(--text-2);margin:6px 2px 0}
+.lookup-block.hidden{display:none}
+tr.hidden{display:none}
+.no-results{display:none;padding:20px;text-align:center;color:var(--text-2)}
+
+/* ---------- Misc ---------- */
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--badge-bg);color:var(--badge-fg);margin-left:6px;vertical-align:middle}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.toc-top{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:18px 0 10px;box-shadow:var(--shadow)}
+.toc-top a{color:var(--blue);text-decoration:none}
+.toc-top ol{columns:2;column-gap:30px}
+#totop{position:fixed;right:22px;bottom:22px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:46px;height:46px;font-size:20px;cursor:pointer;box-shadow:var(--shadow-2);opacity:0;pointer-events:none;transition:opacity .2s}
+#totop.show{opacity:.92;pointer-events:auto}
+.menu-btn{display:none}
+
+/* ---------- Responsive ---------- */
+@media(max-width:920px){
+  .sidebar{position:fixed;left:0;top:0;z-index:50;transform:translateX(-100%);transition:transform .25s;box-shadow:var(--shadow-2)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:64px 18px 100px}
+  .grid2,.toc-top ol{grid-template-columns:1fr;columns:1}
+  .menu-btn{display:flex;align-items:center;gap:6px;position:fixed;top:12px;left:12px;z-index:60;background:var(--blue);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-2)}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(60,45,20,.25);z-index:40}
+  .scrim.show{display:block}
+}
+
+/* ---------- Print: 暖米滿版 ---------- */
+@media print{
+  @page{margin:0}
+  html,body{background:var(--bg)}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sidebar,.menu-btn,#totop,.searchbar,.scrim{display:none!important}
+  .main{max-width:none;margin:0;padding:16mm 14mm}
+  section,pre,.box,.tablewrap{page-break-inside:avoid}
+  h2.sec{page-break-after:avoid}
+  .calc-card input{border:1px solid var(--border)!important}
+}
+
+/* ---------- 互動計算器 ---------- */
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px 20px;margin:18px 0;box-shadow:var(--shadow)}
+.calc-card h4{margin-top:0;color:var(--h1)}
+.calc-card .desc{font-size:13.5px;color:var(--text-2);margin:2px 0 12px}
+.calc2x2{border-collapse:collapse;margin:8px 0 16px}
+.calc2x2 th,.calc2x2 td{border:1px solid var(--border);padding:7px 10px;text-align:center;font-size:13.5px}
+.calc2x2 th{background:#f3ece0;color:var(--h1);font-weight:700}
+.calc2x2 td{background:#fff}
+.calc2x2 .lbl{font-size:11px;color:var(--text-2);display:block;margin-bottom:3px}
+.calc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;margin:6px 0 16px}
+.calc-inputs label{display:flex;flex-direction:column;gap:4px;font-size:13.5px;color:var(--text-2)}
+.calc input{font-family:var(--mono);width:100%;max-width:120px;font-size:14px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);text-align:right}
+.calc2x2 input{width:78px}
+.calc input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-bg)}
+.calc-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.res-chip{background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:9px;padding:9px 12px}
+.res-chip .k{font-size:11.5px;color:var(--text-2);display:block;line-height:1.3}
+.res-chip .v{font-size:18px;font-weight:800;color:var(--blue);font-family:var(--mono)}
+.res-chip.g{background:var(--green-bg);border-color:var(--green-bd)} .res-chip.g .v{color:var(--green)}
+.res-chip.a{background:var(--warn-bg);border-color:var(--warn-bd)} .res-chip.a .v{color:var(--warn-strong)}
+.res-chip .ci{display:block;font-size:11px;color:var(--text-2);font-family:var(--mono);margin-top:3px;font-weight:600}
+.calc-paste{margin:2px 0 16px}
+.calc-paste .lbl{font-size:11px;color:var(--text-2);display:block;margin-bottom:4px}
+.calc-paste input{max-width:240px}
+@media(max-width:560px){.calc-inputs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn">☰ 目錄</button>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+<!-- ======================= SIDEBAR ======================= -->
+<nav class="sidebar" id="sidebar">
+  <div class="brand">程式學習指南<small>觀念 · 流程 · 演算法 · 查表</small></div>
+
+  <h2>第一部 · 核心觀念</h2>
+  <a href="#c1">1. 程式如何被執行</a>
+  <a href="#c2">2. 變數與資料型別</a>
+  <a href="#c3">3. 控制流程</a>
+  <a href="#c4">4. 函式</a>
+  <a href="#c5">5. 資料結構選型</a>
+  <a href="#c6">6. 物件導向入門</a>
+  <a href="#c7">7. 錯誤與例外處理</a>
+  <a href="#c8">8. 模組 · 套件 · 虛擬環境</a>
+
+  <h2>第二部 · 流程與心法</h2>
+  <a href="#w1">9. 解題流程</a>
+  <a href="#w2">10. Debug 方法論</a>
+  <a href="#w3">11. Git 版本控制</a>
+  <a href="#w4">12. 程式碼品質與測試</a>
+
+  <h2>第三部 · 演算法</h2>
+  <a href="#a1">13. Big-O 複雜度</a>
+  <a href="#a2">14. 搜尋</a>
+  <a href="#a3">15. 排序</a>
+  <a href="#a4">16. 遞迴與常見模式</a>
+
+  <h2>第四部 · 進階語言與資料</h2>
+  <a href="#x1">17. JavaScript 基礎</a>
+  <a href="#x2">18. SQL 與資料庫</a>
+  <a href="#x3">19. pandas 實戰</a>
+  <a href="#x4">20. 環境部署與 Docker</a>
+  <a href="#x5">21. HTTP / API 基礎</a>
+  <a href="#x6">22. 進階資料結構</a>
+
+  <h2>第五部 · 互動計算器</h2>
+  <a href="#calc">醫療統計計算器</a>
+
+  <h2>第六部 · 查表速查</h2>
+  <a href="#t-html">HTML 標籤</a>
+  <a href="#t-css">CSS 屬性</a>
+  <a href="#t-cssadv">CSS 進階</a>
+  <a href="#t-py">Python 速查</a>
+  <a href="#t-pyadv">Python 進階語法</a>
+  <a href="#t-pyerr">Python 常見錯誤</a>
+  <a href="#t-pylib">Python 標準庫</a>
+  <a href="#t-js">JavaScript 速查</a>
+  <a href="#t-sql">SQL 速查</a>
+  <a href="#t-regex">正規表達式 Regex</a>
+  <a href="#t-json">JSON / YAML</a>
+  <a href="#t-md">Markdown 語法</a>
+  <a href="#t-shell">Shell 終端機指令</a>
+  <a href="#t-med">醫療資料 · 統計 · 標準</a>
+  <a href="#t-docker">Docker 指令</a>
+  <a href="#t-cc">Claude Code 指令</a>
+</nav>
+
+<!-- ======================= MAIN ======================= -->
+<main class="main">
+  <h1 class="page">程式學習指南</h1>
+  <p class="subtitle">給聰明的初學者：左半把<strong>為什麼</strong>講透（觀念、流程、演算法），右半把<strong>怎麼查</strong>列清（HTML / CSS / Python / 醫療速查表）。技術名詞保留英文，方便對照原文資料。</p>
+
+  <div class="toc-top">
+    <strong style="color:var(--amber)">如何使用這份文件</strong>
+    <ul style="margin-top:8px">
+      <li><b>第一～四部</b>：用讀的，理解概念與取捨（核心觀念→流程心法→演算法→進階語言與資料）。配合醫療類比加速直覺。</li>
+      <li><b>第五部 計算器</b>：直接輸入數字即時試算（診斷指標 2×2、療效風險、檢驗後機率，皆附 95% 信賴區間或修正值）。</li>
+      <li><b>第六部 查表</b>：不用背。最上方<b>即時搜尋框</b>打關鍵字（中英皆可，如 <code>flex</code>、<code>字串</code>、<code>chmod</code>、<code>sensitivity</code>；連主題名 <code>regex</code>、<code>大歐</code> 也能搜）瞬間過濾。</li>
+      <li>整份可直接 <code>Cmd/Ctrl + P</code> 列印成暖米滿版 PDF。</li>
+    </ul>
+  </div>
+
+<!-- ============================================================= -->
+<!-- 第一部 核心觀念 -->
+<!-- ============================================================= -->
+
+<section id="c1">
+<h2 class="sec"><span class="num">1</span>程式如何被執行</h2>
+<p>寫程式的本質：<strong>把人能讀的指令，變成電腦能執行的動作</strong>。中間隔著一層「翻譯」。理解這層翻譯，很多怪現象（為什麼錯誤訊息長那樣、為什麼改了沒效果）就有解釋。</p>
+
+<h3>編譯 (Compile) vs 直譯 (Interpret)</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>方式</th><th>怎麼做</th><th>代表語言</th><th>類比</th></tr></thead>
+<tbody>
+<tr><td><strong>編譯</strong></td><td>整份原始碼先一次翻成機器碼（執行檔），再執行</td><td>C, C++, Rust, Go</td><td>把整本外文書<b>先全部翻譯印出</b>再給人看</td></tr>
+<tr><td><strong>直譯</strong></td><td>一行一行邊翻譯邊執行</td><td><strong>Python</strong>, JavaScript, Ruby</td><td>請<b>口譯員現場一句句翻</b></td></tr>
+</tbody>
+</table></div>
+<p>Python 是直譯語言（嚴格說：先轉成 bytecode 再由虛擬機執行，但你可當成「一行行跑」）。好處是改完馬上能跑、互動性高；代價是速度比編譯語言慢。</p>
+
+<div class="box info"><div class="t">💡 關鍵心智模型</div>
+<p>電腦<strong>極度笨但極度快</strong>。它不會「猜你的意思」，只會<strong>一字不差照你寫的做</strong>。程式出錯 99% 不是電腦壞了，是你的指令和你以為的意思有落差。Debug 的本質就是找出這個落差。</p></div>
+
+<h3>原始碼 → 執行的旅程</h3>
+<p><code>你寫的 .py 檔</code> → <code>Python 直譯器讀取</code> → <code>逐行執行</code> → <code>輸出結果 / 報錯</code>。當你在終端機打 <code class="g">python3 script.py</code>，就是叫直譯器去跑那個檔。</p>
+<div class="box med"><div class="t">🩺 醫療類比</div>
+<p class="analogy">編譯像<b>事先排好的給藥流程表</b>（一次定稿、跑很快、改動要重編）；直譯像<b>查房時口頭逐項醫囑</b>（即時、彈性、但每次都要重念一遍）。Python 屬後者——適合探索資料、快速試做。</p></div>
+</section>
+
+<section id="c2">
+<h2 class="sec"><span class="num">2</span>變數與資料型別</h2>
+<p><strong>變數 (variable)</strong> 是給資料一個名字，方便之後取用與重複使用。Python 的變數比較像<strong>貼在物件上的標籤</strong>，而不是「裝東西的盒子」——同一個物件可以貼很多標籤。</p>
+<pre><span class="label">python</span><code><span class="kw">age</span> = 42            <span class="cmt"># age 這個標籤指向整數 42</span>
+name = <span class="str">"Dr. Wu"</span>      <span class="cmt"># 指向一段文字</span>
+is_on_call = True   <span class="cmt"># 指向布林值</span></code></pre>
+
+<h3>常見資料型別 (Data Types)</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>型別</th><th>Python 寫法</th><th>意義</th><th>例子</th></tr></thead>
+<tbody>
+<tr><td><code>int</code></td><td><code>42</code></td><td>整數</td><td>病人年齡、床號</td></tr>
+<tr><td><code>float</code></td><td><code>36.8</code></td><td>浮點數（小數）</td><td>體溫、檢驗值</td></tr>
+<tr><td><code>str</code></td><td><code>"male"</code></td><td>字串（文字）</td><td>姓名、診斷</td></tr>
+<tr><td><code>bool</code></td><td><code>True / False</code></td><td>布林（真/假）</td><td>是否發燒</td></tr>
+<tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td>有序清單（可改）</td><td>一串檢驗值</td></tr>
+<tr><td><code>dict</code></td><td><code>{"hr": 80}</code></td><td>鍵值對照表</td><td>一筆病歷欄位</td></tr>
+<tr><td><code>None</code></td><td><code>None</code></td><td>「沒有值」</td><td>檢驗尚未回報</td></tr>
+</tbody>
+</table></div>
+
+<div class="box warn"><div class="t">⚠️ 最常見初學者地雷</div>
+<p><code>"36.8"</code>（字串）和 <code>36.8</code>（數字）<strong>不一樣</strong>。從檔案或網頁讀進來的數字常常是字串，直接拿去算會出錯或結果怪異。要用 <code>float("36.8")</code> 轉型。<br>
+另外 <code>=</code> 是<b>賦值</b>（把右邊指給左邊），<code>==</code> 才是<b>比較相等</b>。寫錯是經典 bug。</p></div>
+
+<h3>動態型別 (Dynamic Typing)</h3>
+<p>Python 不需要事先宣告型別，變數型別由「目前指向什麼」決定，且可隨時改變。方便，但也代表錯誤可能晚一點才爆出來——這正是後面「測試」存在的理由。</p>
+</section>
+
+<section id="c3">
+<h2 class="sec"><span class="num">3</span>控制流程 (Control Flow)</h2>
+<p>程式預設由上往下一行行跑。<strong>控制流程</strong>讓它能「分岔」與「重複」——這是程式從「計算機」變成「能做決策的工具」的關鍵。</p>
+
+<h3>條件判斷 if / elif / else</h3>
+<pre><span class="label">python</span><code>temp = 38.5
+<span class="kw">if</span> temp &gt;= 38.0:
+    print(<span class="str">"發燒"</span>)
+<span class="kw">elif</span> temp &lt; 36.0:
+    print(<span class="str">"低體溫"</span>)
+<span class="kw">else</span>:
+    print(<span class="str">"體溫正常"</span>)</code></pre>
+<div class="box info"><div class="t">💡 Python 用「縮排」定義區塊</div>
+<p>多數語言用 <code>{ }</code> 框住區塊，Python 用<strong>縮排（通常 4 個空格）</strong>。同一層的程式碼縮排必須一致，否則直接報 <code>IndentationError</code>。這逼你寫出視覺整齊的程式——是特色不是 bug。</p></div>
+
+<h3>迴圈 (Loops)：重複做事</h3>
+<div class="grid2">
+<div><h4>for：對一群東西逐一處理</h4>
+<pre><span class="label">python</span><code>labs = [120, 95, 180]
+<span class="kw">for</span> v <span class="kw">in</span> labs:
+    <span class="kw">if</span> v &gt; 140:
+        print(v, <span class="str">"偏高"</span>)</code></pre></div>
+<div><h4>while：條件成立就一直做</h4>
+<pre><span class="label">python</span><code>n = 3
+<span class="kw">while</span> n &gt; 0:
+    print(<span class="str">"倒數"</span>, n)
+    n = n - 1   <span class="cmt"># 一定要讓它趨近結束</span></code></pre></div>
+</div>
+<div class="box warn"><div class="t">⚠️ 無窮迴圈 (Infinite Loop)</div>
+<p><code>while</code> 若忘了更新條件變數，會永遠跑不停、程式卡死。終端機按 <code>Ctrl + C</code> 強制中斷。<b>for 較安全</b>（跑完清單就停），不確定次數時才用 while。</p></div>
+
+<h3>布林邏輯與真假值</h3>
+<p>條件由比較運算子（<code>&gt; &lt; == != &gt;= &lt;=</code>）與邏輯運算子（<code>and / or / not</code>）組成。Python 還有「Truthy/Falsy」：空字串、空清單、<code>0</code>、<code>None</code> 都當成 <code>False</code>。所以 <code>if labs:</code> 等於「如果清單非空」。</p>
+</section>
+
+<section id="c4">
+<h2 class="sec"><span class="num">4</span>函式 (Functions)</h2>
+<p>函式是<strong>把一段會重複用的邏輯包起來、給它名字</strong>。輸入參數 → 處理 → 回傳結果。它是寫出可維護程式的最重要單一觀念。</p>
+<pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">bmi</span>(weight_kg, height_m):
+    <span class="str">"""計算 BMI，回傳數值。"""</span>   <span class="cmt"># docstring：說明用途</span>
+    <span class="kw">return</span> weight_kg / (height_m ** 2)
+
+result = <span class="fn">bmi</span>(70, 1.75)    <span class="cmt"># 呼叫，result = 22.86</span></code></pre>
+
+<h3>為什麼一定要學會用函式</h3>
+<ul>
+<li><strong>DRY（Don't Repeat Yourself）</strong>：同樣邏輯只寫一次。改公式只改一處，不會漏改。</li>
+<li><strong>抽象 (Abstraction)</strong>：用的時候只需知道「給什麼、回什麼」，不必每次重看內部。像呼叫檢驗——你看報告，不必親自跑質譜儀。</li>
+<li><strong>可測試</strong>：小而單一職責的函式，容易單獨驗證對錯。</li>
+</ul>
+
+<h3>參數、回傳、作用域</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>概念</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td>位置參數 / 關鍵字參數</td><td><code>bmi(70, 1.75)</code> 靠順序；<code>bmi(height_m=1.75, weight_kg=70)</code> 靠名字（較清楚不易錯）</td></tr>
+<tr><td>預設值</td><td><code>def f(x, unit="mg"):</code> 沒給就用預設</td></tr>
+<tr><td><code>return</code></td><td>把結果丟回呼叫端。沒寫 return 則回傳 <code>None</code></td></tr>
+<tr><td>作用域 (scope)</td><td>函式內建立的變數只活在函式內，外面看不到——這是<b>好事</b>，避免互相干擾</td></tr>
+</tbody>
+</table></div>
+<div class="box tip"><div class="t">✓ 黃金準則</div><p>一個函式只做<strong>一件事</strong>，名字就是它做的事（動詞開頭：<code>calculate_dose</code>、<code>load_patients</code>）。如果一個函式要寫一段註解才解釋得清楚它在幹嘛，通常代表該拆成兩個。</p></div>
+</section>
+
+<section id="c5">
+<h2 class="sec"><span class="num">5</span>資料結構選型</h2>
+<p>用對資料結構，程式碼短一半、跑快十倍。四個最常用的，重點是<strong>「何時用哪個」</strong>。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>結構</th><th>寫法</th><th>特性</th><th>什麼時候用</th></tr></thead>
+<tbody>
+<tr><td><strong>list</strong> 清單</td><td><code>[3,1,2]</code></td><td>有序、可改、可重複</td><td>一串東西、會增刪、在意順序（檢驗時間序列）</td></tr>
+<tr><td><strong>tuple</strong> 元組</td><td><code>(25.04, 121.5)</code></td><td>有序、<b>不可改</b></td><td>固定不變的一組（經緯度、RGB、回傳多值）</td></tr>
+<tr><td><strong>dict</strong> 字典</td><td><code>{"hr":80,"bp":120}</code></td><td>鍵→值對照、查找極快</td><td>「用名字查資料」（一筆病歷、設定檔、計數）</td></tr>
+<tr><td><strong>set</strong> 集合</td><td><code>{1,2,3}</code></td><td>無序、<b>不重複</b></td><td>去重、判斷「有沒有」、交集/聯集</td></tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="t">💡 dict 與 set 為何「快」</div>
+<p>它們用 <strong>hash（雜湊）</strong>實作：查一筆資料幾乎是「直接算出位置」，不必從頭找。在 100 萬筆裡查一個 key，dict 幾乎瞬間；list 用 <code>in</code> 找則要一筆筆比對。<b>「我要反覆查某個東西在不在」就用 set/dict，別用 list。</b></p></div>
+
+<h3>選擇決策樹</h3>
+<ul>
+<li>要<b>順序</b>且會修改 → <code>list</code></li>
+<li>要<b>用名字/key 查</b> → <code>dict</code></li>
+<li>只在意<b>有沒有、要不要去重</b> → <code>set</code></li>
+<li>一組值<b>固定不該被改</b> → <code>tuple</code></li>
+</ul>
+<div class="box med"><div class="t">🩺 醫療類比</div><p class="analogy">一筆病人資料用 <b>dict</b>（<code>{"name":..., "age":..., "dx":...}</code>）；一批病人用 <b>list of dict</b>；想知道「這些病人涵蓋哪些不重複的診斷碼」用 <b>set</b>。這三者組合幾乎能表達所有臨床表格資料。</p></div>
+</section>
+
+<section id="c6">
+<h2 class="sec"><span class="num">6</span>物件導向入門 (OOP)</h2>
+<p>當資料和「對這些資料的操作」總是綁在一起，就值得包成一個<strong>類別 (class)</strong>。Class 是「藍圖」，依藍圖造出來的具體東西叫<strong>物件/實例 (instance)</strong>。</p>
+<pre><span class="label">python</span><code><span class="kw">class</span> <span class="fn">Patient</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, name, weight, height):  <span class="cmt"># 建構子</span>
+        self.name = name        <span class="cmt"># 屬性 (attribute)</span>
+        self.weight = weight
+        self.height = height
+
+    <span class="kw">def</span> <span class="fn">bmi</span>(self):                <span class="cmt"># 方法 (method)</span>
+        <span class="kw">return</span> self.weight / (self.height ** 2)
+
+p = <span class="fn">Patient</span>(<span class="str">"Wu"</span>, 70, 1.75)   <span class="cmt"># 造一個實例</span>
+print(p.name, p.<span class="fn">bmi</span>())        <span class="cmt"># Wu 22.86</span></code></pre>
+
+<h3>四個核心詞</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>詞</th><th>意思</th><th>類比</th></tr></thead>
+<tbody>
+<tr><td>class 類別</td><td>藍圖／模板</td><td>「病人」這個<b>概念</b></td></tr>
+<tr><td>instance 實例</td><td>依藍圖造出的具體物件</td><td>王先生這個<b>具體的人</b></td></tr>
+<tr><td>attribute 屬性</td><td>物件身上的資料</td><td>姓名、體重</td></tr>
+<tr><td>method 方法</td><td>物件能做的動作（綁在它身上的函式）</td><td>算 BMI</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 self 是什麼</div><p><code>self</code> 代表「這個物件自己」。每個 method 第一個參數都是 self，讓方法能存取<b>這一個</b>物件的資料。<code>p.bmi()</code> 時 Python 自動把 <code>p</code> 當成 self 傳進去。</p></div>
+<div class="box tip"><div class="t">✓ 初學者層級的建議</div><p>先把 class 當成「<b>把相關資料 + 操作打包</b>」的工具就好。繼承 (inheritance)、多型 (polymorphism) 等進階特性，等你真的遇到「兩種東西很像但有點不同」再學，不必一開始硬塞。</p></div>
+</section>
+
+<section id="c7">
+<h2 class="sec"><span class="num">7</span>錯誤與例外處理</h2>
+<p>錯誤分兩種，處理方式完全不同：</p>
+<div class="tablewrap"><table>
+<thead><tr><th>類型</th><th>何時發生</th><th>怎麼辦</th></tr></thead>
+<tbody>
+<tr><td><strong>語法錯誤 SyntaxError</strong></td><td>程式根本跑不起來（少冒號、括號不對）</td><td>照錯誤訊息指的行去改</td></tr>
+<tr><td><strong>執行期例外 Exception</strong></td><td>跑到一半出狀況（除以零、檔案不存在、key 不在）</td><td>用 <code>try/except</code> 預先處理</td></tr>
+</tbody>
+</table></div>
+
+<h3>讀懂 Traceback（錯誤追蹤）</h3>
+<p>Python 報錯時印出的一長串叫 traceback。<strong>從最下面往上讀</strong>：最後一行是錯誤類型與訊息，上面是「它怎麼走到出錯這一步」。這是 debug 最重要的線索，不要直接跳過。</p>
+<pre><span class="label">traceback</span><code>Traceback (most recent call last):
+  File "app.py", line 12, in &lt;module&gt;
+    dose = total / count
+ZeroDivisionError: division by zero   <span class="cmt"># ← 重點在這行</span></code></pre>
+
+<h3>try / except：優雅地處理意外</h3>
+<pre><span class="label">python</span><code><span class="kw">try</span>:
+    value = float(raw_input)
+<span class="kw">except</span> ValueError:
+    print(<span class="str">"輸入不是有效數字，跳過"</span>)
+    value = None</code></pre>
+<div class="box warn"><div class="t">⚠️ 不要「吞掉」所有錯誤</div>
+<p>避免寫空的 <code>except: pass</code> 把所有錯誤都默默忽略——bug 會被藏起來、之後極難找。<b>只攔你預期得到、且知道怎麼處理的特定例外</b>（如 <code>ValueError</code>、<code>FileNotFoundError</code>）。<br>例外：純粹的監控/記錄程式碼，失敗時不該連累主流程，這種才適合包起來忽略。</p></div>
+</section>
+
+<section id="c8">
+<h2 class="sec"><span class="num">8</span>模組 · 套件 · 虛擬環境</h2>
+<p>沒人從零寫所有功能。Python 強大在於<strong>站在別人肩膀上</strong>——大量現成的模組與套件。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>名詞</th><th>意思</th></tr></thead>
+<tbody>
+<tr><td><strong>module 模組</strong></td><td>一個 <code>.py</code> 檔，內含可重用的函式/類別</td></tr>
+<tr><td><strong>package 套件</strong></td><td>一組模組打包成的函式庫（如 <code>pandas</code>）</td></tr>
+<tr><td><strong>標準庫 (stdlib)</strong></td><td>Python 內建、免安裝（<code>math</code>, <code>datetime</code>, <code>json</code>, <code>csv</code>...）</td></tr>
+<tr><td><strong>PyPI</strong></td><td>第三方套件的中央倉庫，用 <code>pip</code> 安裝</td></tr>
+</tbody>
+</table></div>
+<pre><span class="label">python</span><code><span class="kw">import</span> math                 <span class="cmt"># 匯入整個模組</span>
+<span class="kw">from</span> datetime <span class="kw">import</span> date    <span class="cmt"># 只匯入需要的</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd          <span class="cmt"># 取別名（慣例）</span></code></pre>
+
+<h3>虛擬環境 (Virtual Environment)：為什麼重要</h3>
+<p>不同專案常需要不同套件、甚至不同版本。<strong>虛擬環境</strong>給每個專案一個獨立、互不污染的套件空間，避免「A 專案升級套件，B 專案就壞了」。</p>
+<pre><span class="label">terminal</span><code>python3 -m venv .venv          <span class="cmt"># 建立</span>
+source .venv/bin/activate      <span class="cmt"># 啟用 (macOS/Linux)</span>
+pip install pandas             <span class="cmt"># 裝在這個環境裡</span>
+deactivate                     <span class="cmt"># 離開</span></code></pre>
+<div class="box med"><div class="t">🩺 類比</div><p class="analogy">虛擬環境像每位病人<b>專屬的無菌器械包</b>——彼此不交叉污染。全部裝進系統 Python（共用器械）遲早交叉感染版本衝突。</p></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- 第二部 流程與心法 -->
+<!-- ============================================================= -->
+
+<section id="w1">
+<h2 class="sec"><span class="num">9</span>解題流程：從問題到程式</h2>
+<p>初學者最大的卡點不是語法，是<strong>「不知道怎麼開始」</strong>。解法是：別急著打字，先拆解。</p>
+<ol>
+<li><strong>講清楚輸入與輸出</strong>：給什麼資料？要得到什麼結果？（例：給一串檢驗值 → 回傳異常的那些）</li>
+<li><strong>拆成小步驟（分解 Decomposition）</strong>：大問題切成能各自解決的小問題。</li>
+<li><strong>寫虛擬碼 (Pseudocode)</strong>：用中文/口語把步驟寫出來，不管語法。</li>
+<li><strong>翻成程式碼</strong>：一個步驟翻成幾行。</li>
+<li><strong>跑、看結果、修正</strong>：先求對，再求好。</li>
+</ol>
+<pre><span class="label">pseudocode</span><code>建立空清單 abnormal
+對每一筆檢驗值 v：
+    如果 v 超出正常範圍：
+        把 v 放進 abnormal
+回傳 abnormal</code></pre>
+<pre><span class="label">python</span><code>abnormal = []
+<span class="kw">for</span> v <span class="kw">in</span> labs:
+    <span class="kw">if</span> v &lt; low <span class="kw">or</span> v &gt; high:
+        abnormal.append(v)
+<span class="kw">return</span> abnormal</code></pre>
+<div class="box tip"><div class="t">✓ 心法</div><p>幾乎所有程式都是這四種積木的組合：<b>儲存資料</b>（變數/結構）、<b>做決定</b>（if）、<b>重複</b>（loop）、<b>打包重用</b>（function）。看到大任務，就想「怎麼用這四塊拼出來」。</p></div>
+</section>
+
+<section id="w2">
+<h2 class="sec"><span class="num">10</span>Debug 方法論</h2>
+<p>寫程式有一半時間在 debug，這很正常，不代表你不行。Debug 是<strong>有系統的偵查</strong>，不是亂改。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>方法</th><th>做法</th><th>適用</th></tr></thead>
+<tbody>
+<tr><td><strong>讀錯誤訊息</strong></td><td>traceback 從下往上讀，先看錯誤類型與行號</td><td>程式直接報錯時，第一步</td></tr>
+<tr><td><strong>print 偵錯</strong></td><td>在可疑處印出變數值，看「實際是什麼」vs「以為是什麼」</td><td>最快、最通用</td></tr>
+<tr><td><strong>二分法 (Bisection)</strong></td><td>在中間插檢查點，判斷 bug 在前半還後半，反覆縮小範圍</td><td>不知問題在哪、程式很長時</td></tr>
+<tr><td><strong>最小重現 (MRE)</strong></td><td>把問題縮到最小一段仍會出錯的程式</td><td>複雜情境、要問人/查資料時</td></tr>
+<tr><td><strong>小黃鴨 (Rubber Duck)</strong></td><td>對著一個物件（或自己）一行行解釋你的程式在幹嘛</td><td>邏輯卡住、講著講著就發現矛盾</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 偵查心態</div><p>核心問題永遠是：<strong>「我『以為』程式在做什麼，和它『實際』做什麼，差在哪？」</strong> Debug 就是縮小這個差距。每次只改一個地方、改完就驗證——一次改五個地方會搞不清是哪個有效。</p></div>
+</section>
+
+<section id="w3">
+<h2 class="sec"><span class="num">11</span>Git 版本控制</h2>
+<p><strong>Git</strong> 是程式碼的「時光機 + 存檔點」。它記錄每次改動，讓你能回到任何過去版本、比較差異、和別人協作而不互相覆蓋。<strong>GitHub</strong> 則是把 Git 倉庫放上雲端的平台。</p>
+<h3>核心概念</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>詞</th><th>意思</th><th>類比</th></tr></thead>
+<tbody>
+<tr><td><strong>repository (repo)</strong></td><td>一個被 Git 追蹤的專案資料夾</td><td>整本病歷</td></tr>
+<tr><td><strong>commit</strong></td><td>一次「存檔」，附一句說明做了什麼</td><td>一筆病程紀錄（有時間、有內容）</td></tr>
+<tr><td><strong>branch 分支</strong></td><td>從主線分出去獨立開發，不影響主線</td><td>另開一條治療方案試試，不動原計畫</td></tr>
+<tr><td><strong>merge 合併</strong></td><td>把分支的改動併回主線</td><td>確認有效，併入正式療程</td></tr>
+<tr><td><strong>remote / push / pull</strong></td><td>本機與雲端（GitHub）同步</td><td>把病歷上傳/下載到中央系統</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 為什麼非學不可</div>
+<p>沒有 Git：你會有 <code>報告_final.py</code>、<code>報告_final_真的final.py</code>、<code>報告_最新版2.py</code>。有 Git：一條乾淨的歷史，隨時可回溯「上週能跑、今天壞了」中間到底改了什麼。日常基本流程只有三個動作：<code class="g">git add</code>（選要存的）→ <code class="g">git commit</code>（存檔+說明）→ <code class="g">git push</code>（上傳）。完整指令見第四部查表。</p></div>
+</section>
+
+<section id="w4">
+<h2 class="sec"><span class="num">12</span>程式碼品質與測試</h2>
+<p>程式碼<strong>被讀的次數遠多於被寫的次數</strong>（半年後讀自己的 code 等於讀陌生人的）。可讀性是專業度，不是潔癖。</p>
+<h3>可讀性原則</h3>
+<ul>
+<li><strong>命名即文件</strong>：<code>systolic_bp</code> 勝過 <code>x</code>、<code>sbp1</code>。好名字讓註解變多餘。</li>
+<li><strong>函式短小、單一職責</strong>：一個畫面看得完最佳。</li>
+<li><strong>註解寫「為什麼」，不寫「做什麼」</strong>：程式碼本身說明做什麼；註解解釋為何這樣做、有何陷阱。</li>
+<li><strong>一致性</strong>：縮排、命名風格全檔統一（Python 慣例：變數/函式用 <code>snake_case</code>，類別用 <code>PascalCase</code>）。</li>
+</ul>
+<h3>測試 (Testing)</h3>
+<p>測試就是<strong>用程式驗證程式</strong>：給已知輸入，檢查輸出是否如預期。改了東西後重跑測試，能立刻知道有沒有弄壞別的地方（防止「修 A 壞 B」）。</p>
+<pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">test_bmi</span>():
+    <span class="kw">assert</span> <span class="fn">bmi</span>(70, 1.75) == 22.857142857142858   <span class="cmt"># 已知答案</span>
+    <span class="kw">assert</span> <span class="fn">bmi</span>(50, 2.0) == 12.5</code></pre>
+<div class="box tip"><div class="t">✓ 初學者的最低標準</div><p>不必一開始追求完整測試框架。先養成習慣：寫完一個函式，<b>手動拿幾個你知道答案的例子（含邊界值、空輸入）餵進去驗證</b>。「跑得出來」≠「跑得對」。</p></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- 第三部 演算法 -->
+<!-- ============================================================= -->
+
+<section id="a1">
+<h2 class="sec"><span class="num">13</span>Big-O 複雜度</h2>
+<p><strong>演算法 (algorithm)</strong>＝解決問題的明確步驟。同一問題常有多種解法，差別在<strong>效率</strong>。Big-O 是描述「資料量變大時，所需時間/空間如何增長」的標準語言——它在意<strong>成長趨勢</strong>，不是精確秒數。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Big-O</th><th>名稱</th><th>n 變 10 倍，工作量約</th><th>典型例子</th></tr></thead>
+<tbody>
+<tr><td><code>O(1)</code></td><td>常數</td><td>不變</td><td>dict 查 key、取 list 第 n 個</td></tr>
+<tr><td><code>O(log n)</code></td><td>對數</td><td>幾乎不變（+1 步）</td><td>二分搜尋</td></tr>
+<tr><td><code>O(n)</code></td><td>線性</td><td>×10</td><td>跑一遍清單、線性搜尋</td></tr>
+<tr><td><code>O(n log n)</code></td><td>線性對數</td><td>×十幾倍</td><td>高效排序（merge/quick）</td></tr>
+<tr><td><code>O(n²)</code></td><td>平方</td><td>×100</td><td>巢狀迴圈、氣泡排序</td></tr>
+<tr><td><code>O(2ⁿ)</code></td><td>指數</td><td>爆炸💥</td><td>暴力枚舉所有組合</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 為什麼初學者也要懂</div>
+<p>資料少時什麼寫法都快，差異看不出來。但資料一大，<code>O(n²)</code> 和 <code>O(n)</code> 可能是「跑 3 小時 vs 3 秒」。最常見的實戰陷阱：<strong>在迴圈裡用 <code>list</code> 的 <code>in</code> 去比對</strong>（變 O(n²)）——改用 <code>set</code>/<code>dict</code> 即降為 O(n)。這是第 5 章「資料結構選型」直接的回報。</p></div>
+</section>
+
+<section id="a2">
+<h2 class="sec"><span class="num">14</span>搜尋演算法</h2>
+<div class="grid2">
+<div>
+<h4>線性搜尋 O(n)</h4>
+<p>從頭一筆筆找。資料<b>沒排序</b>時唯一選擇。</p>
+<pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">linear</span>(arr, target):
+    <span class="kw">for</span> i, v <span class="kw">in</span> enumerate(arr):
+        <span class="kw">if</span> v == target:
+            <span class="kw">return</span> i
+    <span class="kw">return</span> -1</code></pre>
+</div>
+<div>
+<h4>二分搜尋 O(log n)</h4>
+<p>資料<b>已排序</b>時，每次砍一半，極快。</p>
+<pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">binary</span>(arr, target):
+    lo, hi = 0, len(arr)-1
+    <span class="kw">while</span> lo &lt;= hi:
+        mid = (lo+hi)//2
+        <span class="kw">if</span> arr[mid] == target: <span class="kw">return</span> mid
+        <span class="kw">elif</span> arr[mid] &lt; target: lo = mid+1
+        <span class="kw">else</span>: hi = mid-1
+    <span class="kw">return</span> -1</code></pre>
+</div>
+</div>
+<div class="box med"><div class="t">🩺 直覺：查字典</div>
+<p class="analogy">線性＝<b>從第一頁一頁翻</b>找「肺炎」。二分＝<b>翻到中間</b>，發現太後面就往前半再對半翻。1000 頁的字典，線性最多 1000 次，二分最多約 <b>10 次</b>（2¹⁰≈1000）。前提：字典是<b>排序好</b>的——這就是為什麼「排序」這麼重要。</p></div>
+</section>
+
+<section id="a3">
+<h2 class="sec"><span class="num">15</span>排序演算法</h2>
+<p>實務上你會直接用 Python 的 <code>sorted()</code>（內部是高度優化的 Timsort，O(n log n)）。但理解幾個經典排序，能建立「為何有快慢之分」的直覺。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>演算法</th><th>概念</th><th>平均複雜度</th><th>特點</th></tr></thead>
+<tbody>
+<tr><td>氣泡 Bubble</td><td>相鄰兩兩比較交換，大的「浮」到後面</td><td>O(n²)</td><td>最易懂、最慢，教學用</td></tr>
+<tr><td>插入 Insertion</td><td>像整理手中撲克牌，逐張插到正確位置</td><td>O(n²)</td><td>資料量小或近乎排好時很快</td></tr>
+<tr><td>合併 Merge</td><td>分治：一直對半切，再排序合併回來</td><td>O(n log n)</td><td>穩定、可預測，需額外記憶體</td></tr>
+<tr><td>快速 Quick</td><td>選基準 (pivot)，分成比它大/小兩堆遞迴</td><td>O(n log n)</td><td>實務極快，最壞 O(n²)</td></tr>
+</tbody>
+</table></div>
+<div class="box tip"><div class="t">✓ 實務結論</div><p>自己手刻排序幾乎只在學習與面試。真要排資料：<code>sorted(data)</code> 或 <code>data.sort()</code>，需要自訂規則用 <code>key=</code>（如 <code>sorted(patients, key=lambda p: p["age"])</code>）。<b>懂原理是為了選對工具、看懂效能，不是為了重造輪子。</b></p></div>
+</section>
+
+<section id="a4">
+<h2 class="sec"><span class="num">16</span>遞迴與常見模式</h2>
+<h3>遞迴 (Recursion)：函式呼叫自己</h3>
+<p>把大問題化成「同樣形式的小問題」。兩個必備要素：<strong>終止條件 (base case)</strong>（何時停）＋<strong>遞迴步驟</strong>（縮小問題自呼叫）。少了終止條件 = 無窮遞迴 → 爆 <code>RecursionError</code>。</p>
+<pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n &lt;= 1:          <span class="cmt"># base case：停止點</span>
+        <span class="kw">return</span> 1
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n-1)  <span class="cmt"># 縮小問題</span></code></pre>
+<p>遞迴特別適合<strong>天然有層次/巢狀結構</strong>的問題：資料夾樹、家族樹、JSON 巢狀、分治演算法。能用遞迴的通常也能用迴圈，選可讀性高的那個。</p>
+
+<h3>該認得的幾個解題模式</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>模式</th><th>核心想法</th><th>典型題型</th></tr></thead>
+<tbody>
+<tr><td>雜湊查找 Hash Lookup</td><td>先把資料丟進 dict/set，之後 O(1) 查</td><td>「兩數之和」、找重複、計次</td></tr>
+<tr><td>雙指標 Two Pointers</td><td>兩個索引從兩端或同向移動</td><td>已排序陣列找配對、回文判斷</td></tr>
+<tr><td>滑動視窗 Sliding Window</td><td>維護一個移動的區間，避免重複計算</td><td>「最長不重複子字串」、區間統計</td></tr>
+<tr><td>分治 Divide & Conquer</td><td>切小 → 各自解 → 合併</td><td>merge sort、二分搜尋</td></tr>
+<tr><td>貪婪 Greedy</td><td>每步都選當下最好的</td><td>找零錢、區間排程</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 心法</div><p>大多數演算法題，是在用<strong>記憶體換時間</strong>（先建索引/快取，之後查得快）。看到「要反覆查找/比對」，先想「能不能先建一個 dict/set」——這一招能解掉非常多問題。</p></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- 第四部 查表 -->
+<!-- ============================================================= -->
+
+<!-- ============================================================= -->
+<!-- 第四部 進階語言與資料 -->
+<!-- ============================================================= -->
+
+<section id="x1">
+<h2 class="sec"><span class="num">17</span>JavaScript 基礎</h2>
+<p>HTML 是<strong>骨架</strong>、CSS 是<strong>外觀</strong>、<strong>JavaScript (JS)</strong> 是<strong>行為</strong>——讓網頁能反應、運算、改變內容。它是唯一能在瀏覽器原生執行的程式語言（你這份學習指南的搜尋過濾、目錄高亮就是 JS 做的）。透過 Node.js，它也能跑後端。</p>
+
+<h3>把 JS 放進網頁</h3>
+<pre><span class="label">html</span><code>&lt;button id="go"&gt;計算&lt;/button&gt;
+&lt;p id="out"&gt;&lt;/p&gt;
+&lt;script&gt;
+  <span class="cmt">// 這裡寫 JS</span>
+&lt;/script&gt;</code></pre>
+
+<h3>變數與函式</h3>
+<pre><span class="label">javascript</span><code><span class="kw">let</span> name = <span class="str">"Wu"</span>;       <span class="cmt">// 可重新賦值</span>
+<span class="kw">const</span> MAX = 140;        <span class="cmt">// 常數，不可改（預設優先用 const）</span>
+
+<span class="kw">function</span> <span class="fn">bmi</span>(w, h) {       <span class="cmt">// 傳統函式</span>
+  <span class="kw">return</span> w / (h * h);
+}
+<span class="kw">const</span> <span class="fn">bmi2</span> = (w, h) =&gt; w / (h * h);  <span class="cmt">// 箭頭函式（簡寫）</span></code></pre>
+
+<h3>操作網頁：DOM 與事件</h3>
+<p><strong>DOM (Document Object Model)</strong> 是瀏覽器把 HTML 變成「可被程式操作的物件樹」。JS 透過它讀取/修改畫面。</p>
+<pre><span class="label">javascript</span><code><span class="kw">const</span> btn = document.<span class="fn">querySelector</span>(<span class="str">"#go"</span>);   <span class="cmt">// 找元素</span>
+btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () =&gt; {         <span class="cmt">// 綁定事件</span>
+  document.<span class="fn">querySelector</span>(<span class="str">"#out"</span>).textContent = <span class="str">"已點擊"</span>;
+});</code></pre>
+
+<h3>JS 對照 Python（同概念、不同寫法）</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>概念</th><th>Python</th><th>JavaScript</th></tr></thead>
+<tbody>
+<tr><td>變數宣告</td><td><code>x = 1</code></td><td><code>let x = 1;</code> / <code>const</code></td></tr>
+<tr><td>印出</td><td><code>print(x)</code></td><td><code>console.log(x)</code></td></tr>
+<tr><td>相等比較</td><td><code>==</code></td><td><code>===</code>（嚴格，<b>建議用這個</b>）</td></tr>
+<tr><td>字串內嵌變數</td><td><code>f"{x}"</code></td><td><code>`值=${x}`</code>（樣板字面值，用反引號）</td></tr>
+<tr><td>註解</td><td><code>#</code></td><td><code>//</code> 或 <code>/* */</code></td></tr>
+<tr><td>「沒有值」</td><td><code>None</code></td><td><code>null</code> / <code>undefined</code></td></tr>
+<tr><td>清單 / 字典</td><td><code>list []</code> / <code>dict {}</code></td><td><code>array []</code> / <code>object {}</code></td></tr>
+<tr><td>區塊界定</td><td>縮排</td><td><code>{ }</code> 大括號，行尾 <code>;</code></td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 三個 JS 特色觀念</div>
+<p>① <b>執行環境</b>：瀏覽器（操作網頁）與 Node.js（後端/工具）。② <b>非同步 async/await</b>：JS 擅長「等待網路回應時不卡住」，這是它與 Python 體感最不同處。③ <code>===</code> vs <code>==</code>：後者會偷偷轉型造成怪 bug，一律用 <code>===</code>。</p></div>
+</section>
+
+<section id="x2">
+<h2 class="sec"><span class="num">18</span>SQL 與資料庫基礎</h2>
+<p>當資料量大、要長期保存、多人共用、複雜查詢時，就需要<strong>資料庫</strong>。最主流的是<strong>關聯式資料庫 (Relational DB)</strong>：資料存在一張張<strong>表 (table)</strong> 裡，每<strong>列 (row)</strong> 是一筆紀錄、每<strong>欄 (column)</strong> 是一個欄位，用<strong>主鍵 (primary key)</strong> 唯一識別每筆。<strong>SQL</strong> 就是查詢這些表的語言。</p>
+
+<h3>最核心的查詢：SELECT</h3>
+<pre><span class="label">sql</span><code><span class="kw">SELECT</span> name, age          <span class="cmt">-- 要哪些欄（* 代表全部）</span>
+<span class="kw">FROM</span> patients             <span class="cmt">-- 從哪張表</span>
+<span class="kw">WHERE</span> age &gt;= 65            <span class="cmt">-- 篩選條件</span>
+<span class="kw">ORDER BY</span> age <span class="kw">DESC</span>         <span class="cmt">-- 排序（DESC 由大到小）</span>
+<span class="kw">LIMIT</span> 10;                 <span class="cmt">-- 只取前 10 筆</span></code></pre>
+
+<h3>分組統計：GROUP BY</h3>
+<pre><span class="label">sql</span><code><span class="kw">SELECT</span> department,
+       <span class="fn">COUNT</span>(*) <span class="kw">AS</span> n,
+       <span class="fn">AVG</span>(length_of_stay) <span class="kw">AS</span> avg_los
+<span class="kw">FROM</span> admissions
+<span class="kw">GROUP BY</span> department
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 5;       <span class="cmt">-- 對分組後的結果再篩選</span></code></pre>
+
+<h3>跨表合併：JOIN</h3>
+<pre><span class="label">sql</span><code><span class="kw">SELECT</span> p.name, l.test, l.value
+<span class="kw">FROM</span> patients p
+<span class="kw">JOIN</span> labs l <span class="kw">ON</span> p.id = l.patient_id   <span class="cmt">-- 用 patient_id 串接兩表</span>
+<span class="kw">WHERE</span> l.value &gt; l.upper_limit;</code></pre>
+<div class="box med"><div class="t">🩺 類比：對病歷室下指令</div>
+<p class="analogy">SQL 是<b>宣告式 (declarative)</b>——你描述「<b>要什麼結果</b>」（給我 65 歲以上、住院超過 7 天的名單），<b>不必寫「怎麼一櫃櫃翻」</b>。資料庫引擎自己想出最快的找法。這和你前面寫 for 迴圈「一步步教電腦怎麼做」的<b>命令式</b>思維相反——是很值得體會的轉換。</p></div>
+</section>
+
+<section id="x3">
+<h2 class="sec"><span class="num">19</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
+<p><code>pandas</code> 是 Python 處理表格資料的主力。核心物件是 <strong>DataFrame</strong>——就是「程式裡的 Excel 表」。以下是分析一份檢驗值 CSV 的<strong>完整典型流程</strong>。</p>
+
+<h4>① 讀檔與初探</h4>
+<pre><span class="label">python</span><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+df = pd.<span class="fn">read_csv</span>(<span class="str">"labs.csv"</span>)   <span class="cmt"># Excel 用 read_excel</span>
+df.<span class="fn">head</span>()        <span class="cmt"># 看前 5 列</span>
+df.<span class="fn">info</span>()        <span class="cmt"># 欄位型別、缺值概況</span>
+df.<span class="fn">describe</span>()    <span class="cmt"># 數值欄的統計摘要（mean/std/min/max…）</span>
+df.shape        <span class="cmt"># (列數, 欄數)</span></code></pre>
+
+<h4>② 選欄與篩列</h4>
+<pre><span class="label">python</span><code>df[<span class="str">"glucose"</span>]                  <span class="cmt"># 取一欄</span>
+df[[<span class="str">"name"</span>, <span class="str">"glucose"</span>]]        <span class="cmt"># 取多欄</span>
+df[df[<span class="str">"glucose"</span>] &gt; 126]         <span class="cmt"># 篩：空腹血糖 &gt; 126</span>
+df[(df.glucose &gt; 126) &amp; (df.age &gt;= 65)]  <span class="cmt"># 多條件：& 且 / | 或，各條件要括號</span></code></pre>
+
+<h4>③ 處理缺值（臨床資料一定有）</h4>
+<pre><span class="label">python</span><code>df.<span class="fn">isna</span>().<span class="fn">sum</span>()                 <span class="cmt"># 每欄缺幾筆</span>
+df = df.<span class="fn">dropna</span>(subset=[<span class="str">"glucose"</span>]) <span class="cmt"># 丟掉血糖缺值的列</span>
+df[<span class="str">"glucose"</span>] = df.glucose.<span class="fn">fillna</span>(df.glucose.<span class="fn">median</span>())  <span class="cmt"># 或用中位數補</span></code></pre>
+
+<h4>④ 分組彙總</h4>
+<pre><span class="label">python</span><code>df.<span class="fn">groupby</span>(<span class="str">"dept"</span>)[<span class="str">"los"</span>].<span class="fn">mean</span>()   <span class="cmt"># 各科平均住院天數</span>
+df.<span class="fn">groupby</span>(<span class="str">"dept"</span>).<span class="fn">agg</span>(
+    n=(<span class="str">"id"</span>, <span class="str">"count"</span>),
+    avg_glu=(<span class="str">"glucose"</span>, <span class="str">"mean"</span>),
+)</code></pre>
+
+<h4>⑤ 跨表合併與匯出</h4>
+<pre><span class="label">python</span><code>merged = pd.<span class="fn">merge</span>(patients, labs, on=<span class="str">"patient_id"</span>, how=<span class="str">"left"</span>)
+merged.<span class="fn">to_csv</span>(<span class="str">"out.csv"</span>, index=False)
+merged.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, index=False)</code></pre>
+
+<div class="box tip"><div class="t">✓ 向量化 (Vectorization)：別寫 for 迴圈逐列算</div>
+<p>pandas/numpy 對<strong>整欄一次運算</strong>（如 <code>df["bmi"] = df.weight / df.height**2</code>）比用迴圈逐列快數十倍——這是第三部 Big-O 觀念的實戰回報。看到「想對每列做同樣計算」，先找有沒有向量化寫法，避免 <code>df.iterrows()</code>。</p></div>
+<div class="box warn"><div class="t">⚠️ 健保 / 病歷 CSV 的隱私</div>
+<p>這類檔含 PHI（姓名、病歷號、完整日期）。分析前先<strong>去識別化</strong>、與可還原對照表分開存；<strong>絕不</strong>上傳到公開倉庫或未授權的外部服務。詳見下方醫療查表「去識別化」段。</p></div>
+</section>
+
+<section id="x4">
+<h2 class="sec"><span class="num">20</span>環境部署與 Docker</h2>
+<p><strong>部署 (deployment)</strong> 是把程式從「我的電腦能跑」變成「在伺服器或別人電腦也能穩定跑」。最惱人的經典問題是 <em>"works on my machine"</em>——在你電腦好好的，換台機器卻壞了。原因幾乎都是<strong>環境差異</strong>：作業系統、套件版本、系統函式庫、設定不一致。</p>
+
+<h3>Docker：把整個環境打包帶走</h3>
+<p><strong>Docker</strong> 把「程式 + 所有相依套件 + 執行環境」整包封進一個<strong>容器 (container)</strong>，到任何機器都用同一份環境跑，徹底消除環境差異。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>概念</th><th>意思</th><th>類比</th></tr></thead>
+<tbody>
+<tr><td><strong>image 映像檔</strong></td><td>唯讀的環境模板（藍圖）</td><td>第 6 章的 <b>class 藍圖</b></td></tr>
+<tr><td><strong>container 容器</strong></td><td>依 image 跑起來的執行實例</td><td>第 6 章的 <b>instance 實例</b></td></tr>
+<tr><td><strong>Dockerfile</strong></td><td>描述「如何建出這個環境」的食譜</td><td>SOP 操作手冊</td></tr>
+<tr><td><strong>registry</strong></td><td>存放/分享 image 的倉庫（如 Docker Hub）</td><td>第 8 章的 <b>PyPI</b></td></tr>
+</tbody>
+</table></div>
+
+<h3>Dockerfile 長什麼樣</h3>
+<pre><span class="label">dockerfile</span><code><span class="kw">FROM</span> python:3.13          <span class="cmt"># 以官方 Python 3.13 為基底</span>
+<span class="kw">WORKDIR</span> /app              <span class="cmt"># 容器內的工作目錄</span>
+<span class="kw">COPY</span> . .                  <span class="cmt"># 把專案檔複製進去</span>
+<span class="kw">RUN</span> pip install -r requirements.txt  <span class="cmt"># build 時安裝相依</span>
+<span class="kw">CMD</span> [<span class="str">"python"</span>, <span class="str">"app.py"</span>]   <span class="cmt"># 容器啟動時執行</span></code></pre>
+
+<div class="box info"><div class="t">💡 Docker vs 虛擬環境 (venv)</div>
+<p><b>venv</b>（第 8 章）只隔離 <b>Python 套件</b>；<b>Docker</b> 隔離到 <b>整個作業系統層級</b>的環境（系統函式庫、設定、甚至 OS 版本）。小型個人腳本用 venv 就夠；要交付/上線/跨機器一致，才需要 Docker。</p></div>
+<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Docker 像一間<b>整套打包好的行動手術室貨櫃</b>——不管推到哪間醫院，器械、無菌規格、電力、動線全都一致，不依賴當地環境。venv 則只是「自備一包無菌器械」，手術室本身還是用人家的。</p></div>
+<div class="box tip"><div class="t">✓ 初學者定位</div><p>Docker 是<b>概念先懂、需要時再用</b>的工具。你不必為了學 Python 先學 Docker；但當你想把一個分析工具/網站交給別人跑、或部署到雲端時，它能省下大量「為什麼你那邊跑不起來」的麻煩。常用指令見第六部查表。</p></div>
+</section>
+
+<section id="x5">
+<h2 class="sec"><span class="num">21</span>HTTP / API 與資料交換</h2>
+<p>現代軟體很少單打獨鬥——它們靠 <strong>API (Application Programming Interface)</strong> 互相要資料、送指令。你的 Telegram bot、抓股價腳本、webhook 自動化，本質都是在打 API。懂這層，程式就能「對外界開口」。</p>
+
+<h3>API 是什麼</h3>
+<p>API 是<strong>程式對程式的點餐窗口</strong>：你按它規定的格式送出<strong>請求 (request)</strong>，它回給你約定格式的<strong>回應 (response)</strong>，通常是 JSON。最主流的風格叫 <strong>REST</strong>，建立在 <strong>HTTP</strong>（網頁傳輸協定）之上。</p>
+
+<h3>HTTP 請求方法</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>方法</th><th>用途</th><th>類比（病歷）</th></tr></thead>
+<tbody>
+<tr><td><code>GET</code></td><td>讀取資料（不改動）</td><td>查病歷</td></tr>
+<tr><td><code>POST</code></td><td>新增資料 / 送出表單</td><td>新增一筆病程</td></tr>
+<tr><td><code>PUT / PATCH</code></td><td>整筆更新 / 局部更新</td><td>修改病歷</td></tr>
+<tr><td><code>DELETE</code></td><td>刪除資料</td><td>作廢一筆</td></tr>
+</tbody>
+</table></div>
+
+<h3>一個請求的組成</h3>
+<ul>
+<li><strong>URL（端點 endpoint）</strong>：要找誰，如 <code>https://api.x.com/v1/price</code></li>
+<li><strong>method</strong>：要做什麼（GET/POST…）</li>
+<li><strong>headers</strong>：附帶資訊，最常見是認證 <code>Authorization: Bearer &lt;token&gt;</code></li>
+<li><strong>body</strong>：送出的資料（通常 JSON）；GET 通常沒有 body</li>
+</ul>
+<pre><span class="label">python</span><code><span class="kw">import</span> requests
+r = requests.<span class="fn">get</span>(
+    <span class="str">"https://api.example.com/price"</span>,
+    headers={<span class="str">"Authorization"</span>: <span class="str">"Bearer TOKEN"</span>},
+)
+print(r.status_code)   <span class="cmt"># 200</span>
+data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 JSON 轉成 dict</span></code></pre>
+
+<h3>狀態碼 (Status Code)：回應的第一個訊號</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>範圍</th><th>意義</th><th>常見</th></tr></thead>
+<tbody>
+<tr><td><code>2xx</code></td><td>成功</td><td>200 OK、201 Created</td></tr>
+<tr><td><code>3xx</code></td><td>重導向</td><td>301 永久搬移、302 暫時</td></tr>
+<tr><td><code>4xx</code></td><td><b>你（用戶端）錯</b></td><td>400 格式錯、401 未認證、403 沒權限、404 找不到、429 太頻繁</td></tr>
+<tr><td><code>5xx</code></td><td><b>對方（伺服器）錯</b></td><td>500 內部錯誤、502 閘道錯、503 服務不可用</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 4xx vs 5xx 的除錯方向</div><p>看到 <b>4xx</b>：問題在你的請求（token 過期、網址打錯、參數缺）——改自己。看到 <b>5xx</b>：對方伺服器出狀況——通常重試或等它修。<code>429</code> 特別常見：打太快被<strong>限流 (rate limit)</strong>，要放慢或加重試間隔。</p></div>
+<div class="box warn"><div class="t">⚠️ 認證金鑰 (API Key / Token) 安全</div><p>token 放 <b>header</b>，<strong>絕不</strong>寫進 URL（會被記入日誌與瀏覽器歷史）、不要 hardcode 進程式碼、不要上傳到公開倉庫。改放環境變數或金鑰管理工具（如 macOS Keychain）。</p></div>
+<div class="box med"><div class="t">🩺 醫療關聯</div><p class="analogy">醫療界的 <b>FHIR</b> 標準（見醫療查表）就是一套 REST API——用 GET 查病人、POST 建立紀錄、回傳 JSON。懂了通用 API，就懂了 FHIR 的骨架。</p></div>
+</section>
+
+<section id="x6">
+<h2 class="sec"><span class="num">22</span>進階資料結構</h2>
+<p>第 5 章談了 list/dict/set/tuple——日常 80% 夠用。但有些問題用對「形狀」會優雅很多。以下是電腦科學幾個經典結構，重點仍是<strong>「什麼情境該用哪個」</strong>，多數 Python 都有現成實作。</p>
+
+<h3>Stack 堆疊（LIFO 後進先出）</h3>
+<p>像一疊盤子：只能從<strong>頂端</strong>放、從頂端拿，最後放的最先被取。用途：undo/redo、瀏覽器上一頁、括號配對檢查、函式呼叫堆疊（traceback 就是它）。</p>
+<pre><span class="label">python</span><code>stack = []
+stack.append(<span class="str">"A"</span>)   <span class="cmt"># 推入</span>
+stack.append(<span class="str">"B"</span>)
+top = stack.pop()    <span class="cmt"># 取出 "B"（最後進的先出）</span></code></pre>
+
+<h3>Queue 佇列（FIFO 先進先出）</h3>
+<p>像候診排隊：先到先看。用途：任務排程、訊息佇列、廣度優先搜尋 (BFS)。Python 用 <code>collections.deque</code> 兩端操作才高效（list 從頭刪很慢）。</p>
+<pre><span class="label">python</span><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+q = deque()
+q.append(<span class="str">"P1"</span>)      <span class="cmt"># 入隊（尾端）</span>
+first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code></pre>
+<div class="box med"><div class="t">🩺 類比</div><p class="analogy">Stack＝<b>桌上一疊病歷</b>，從最上面拿（最後放的先處理）；Queue＝<b>候診叫號</b>，先掛號先看。</p></div>
+
+<h3>Tree 樹（階層結構）</h3>
+<p>一個根、往下分支、末端是葉，節點不繞回去。到處都是樹：檔案系統資料夾、網頁 DOM、決策樹模型、疾病分類階層（ICD 從大類往下細分）、組織架構。</p>
+
+<h3>Graph 圖（關係網）</h3>
+<p>節點 (node) ＋ 連線 (edge)，能表達任意關係網、可有環。用途：社群人脈、地圖最短路徑、轉診網路、藥物交互作用網、知識圖譜。樹其實是「沒有環的特例圖」。</p>
+
+<h3>Heap 堆積 / 優先佇列</h3>
+<p>永遠能<strong>快速取出最小（或最大）</strong>的那個，但內部不完全排序。用途：優先處理（檢傷分級）、找 Top-K、Dijkstra 最短路徑。Python 用 <code>heapq</code>。</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>結構</th><th>關鍵特性</th><th>典型用途</th><th>Python</th></tr></thead>
+<tbody>
+<tr><td>Stack</td><td>後進先出 LIFO</td><td>undo、括號配對、DFS</td><td><code>list</code> append/pop</td></tr>
+<tr><td>Queue</td><td>先進先出 FIFO</td><td>排程、BFS</td><td><code>collections.deque</code></td></tr>
+<tr><td>Hash table</td><td>O(1) 查找</td><td>查找、計數、去重</td><td><code>dict</code> / <code>set</code></td></tr>
+<tr><td>Tree</td><td>階層、無環</td><td>檔案系統、分類階層</td><td>自建 / 套件</td></tr>
+<tr><td>Graph</td><td>任意關係、可有環</td><td>路徑、人脈、交互網</td><td><code>networkx</code></td></tr>
+<tr><td>Heap</td><td>快速取極值</td><td>優先佇列、Top-K</td><td><code>heapq</code></td></tr>
+</tbody>
+</table></div>
+<div class="box tip"><div class="t">✓ 初學者重點</div><p>不必自己刻這些（學習除外）。重點是<strong>看到問題能聯想到形狀</strong>：「要 undo」→ stack；「公平排隊」→ queue；「反覆查找」→ hash；「找最高優先」→ heap；「關係網路」→ graph。挑對結構，演算法常常就自然浮現。</p></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- 第五部 互動計算器 -->
+<!-- ============================================================= -->
+<h2 class="sec" id="calc" style="margin-top:56px"><span class="num">🧮</span>第五部 · 醫療統計計算器</h2>
+<p class="lead">即時試算（改數字立刻重算）。這也是第 17 章 JS／DOM 概念的活範例——本頁就用同樣手法做的。</p>
+
+<div class="calc">
+<div class="calc-card">
+  <h4>① 診斷指標計算器（2×2 表）</h4>
+  <p class="desc">輸入四格人數，自動算出各指標與 <strong>95% 信賴區間 (Wilson)</strong>。</p>
+  <div class="calc-paste">
+    <span class="lbl">⚡ 快速貼上：依序 TP FP FN TN（空格或逗號分隔，自動填入）</span>
+    <input id="dxPaste" class="calc-pasteinput" type="text" placeholder="例：80 30 20 870">
+  </div>
+  <table class="calc2x2">
+    <tr><th></th><th>實際有病 (D+)</th><th>實際無病 (D−)</th></tr>
+    <tr><th>檢驗陽性 (T+)</th>
+        <td><span class="lbl">TP 真陽性</span><input id="tp" type="number" min="0" value="80"></td>
+        <td><span class="lbl">FP 偽陽性</span><input id="fp" type="number" min="0" value="30"></td></tr>
+    <tr><th>檢驗陰性 (T−)</th>
+        <td><span class="lbl">FN 偽陰性</span><input id="fn" type="number" min="0" value="20"></td>
+        <td><span class="lbl">TN 真陰性</span><input id="tn" type="number" min="0" value="870"></td></tr>
+  </table>
+  <div class="calc-results" id="dxResults"></div>
+</div>
+
+<div class="calc-card">
+  <h4>② 療效 / 風險計算器</h4>
+  <p class="desc">比較治療組與對照組的事件發生，算出 RR、OR、ARR、RRR、NNT。</p>
+  <div class="calc-inputs">
+    <label>治療組 事件數<input id="evT" type="number" min="0" value="15"></label>
+    <label>治療組 總人數<input id="nT" type="number" min="1" value="100"></label>
+    <label>對照組 事件數<input id="evC" type="number" min="0" value="25"></label>
+    <label>對照組 總人數<input id="nC" type="number" min="1" value="100"></label>
+  </div>
+  <div class="calc-results" id="txResults"></div>
+</div>
+
+<div class="calc-card">
+  <h4>③ 檢驗後機率計算器（Fagan / 貝氏）</h4>
+  <p class="desc">輸入檢驗前機率與概似比，算出檢驗陽性 / 陰性後的修正機率。LR 可取自計算器 ①。</p>
+  <div class="calc-inputs">
+    <label>檢驗前機率 (%)<input id="preP" type="number" min="0" max="100" value="10"></label>
+    <label>陽性概似比 LR+<input id="lrPos" type="number" min="0" value="10"></label>
+    <label>陰性概似比 LR−<input id="lrNeg" type="number" min="0" value="0.1"></label>
+  </div>
+  <div class="calc-results" id="postResults"></div>
+</div>
+</div>
+
+<h2 class="sec" id="lookup-top" style="margin-top:56px"><span class="num">⌕</span>第六部 · 查表速查區</h2>
+<p class="lead">記憶性指令不必背。下方搜尋框<strong>即時過濾所有表格</strong>——中英文皆可。試試 <code>flex</code>、<code>字串</code>、<code>git</code>、<code>sensitivity</code>、<code>FHIR</code>。</p>
+
+<div class="searchbar">
+  <input id="filter" type="text" placeholder="🔍  輸入關鍵字即時過濾下方所有查表（例：flex / 字串 / commit / ROC）…" autocomplete="off">
+  <div class="hint" id="hint">顯示全部</div>
+</div>
+<div class="no-results" id="noResults">沒有符合的項目，換個關鍵字試試。</div>
+
+<!-- ===== HTML ===== -->
+<div class="lookup-block" id="t-html">
+<h3>HTML 標籤速查</h3>
+
+<h4>文件骨架 &amp; 語意標籤</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>標籤</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>&lt;!doctype html&gt;</code></td><td>宣告 HTML5 文件，放最開頭</td></tr>
+<tr><td><code>&lt;html lang="zh-Hant"&gt;</code></td><td>根元素，lang 標示語言（利於無障礙/翻譯）</td></tr>
+<tr><td><code>&lt;head&gt;</code></td><td>放 meta 資訊、標題、樣式（不顯示於頁面）</td></tr>
+<tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>指定編碼，避免中文亂碼（必加）</td></tr>
+<tr><td><code>&lt;meta name="viewport"...&gt;</code></td><td>手機 RWD 必備</td></tr>
+<tr><td><code>&lt;body&gt;</code></td><td>頁面實際可見內容</td></tr>
+<tr><td><code>&lt;header&gt; &lt;nav&gt; &lt;main&gt; &lt;footer&gt;</code></td><td>語意區塊：頁首/導覽/主內容/頁尾</td></tr>
+<tr><td><code>&lt;section&gt; &lt;article&gt; &lt;aside&gt;</code></td><td>章節 / 獨立文章 / 側欄補充</td></tr>
+</tbody></table></div>
+
+<h4>文字內容</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>標籤</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>&lt;h1&gt;</code> ～ <code>&lt;h6&gt;</code></td><td>標題，h1 最大且每頁應只一個</td></tr>
+<tr><td><code>&lt;p&gt;</code></td><td>段落</td></tr>
+<tr><td><code>&lt;a href="網址"&gt;</code></td><td>超連結；<code>target="_blank"</code> 開新分頁</td></tr>
+<tr><td><code>&lt;strong&gt; &lt;em&gt;</code></td><td>語意上的重要 / 強調（粗體 / 斜體）</td></tr>
+<tr><td><code>&lt;br&gt; &lt;hr&gt;</code></td><td>換行 / 水平分隔線</td></tr>
+<tr><td><code>&lt;ul&gt; &lt;ol&gt; &lt;li&gt;</code></td><td>無序清單 / 有序清單 / 清單項目</td></tr>
+<tr><td><code>&lt;span&gt; &lt;div&gt;</code></td><td>無語意容器：行內 / 區塊（搭 CSS 用）</td></tr>
+<tr><td><code>&lt;code&gt; &lt;pre&gt;</code></td><td>行內程式碼 / 保留排版的程式碼區塊</td></tr>
+</tbody></table></div>
+
+<h4>媒體 · 表格 · 表單</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>標籤</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>&lt;img src="圖" alt="說明"&gt;</code></td><td>圖片；alt 為替代文字（無障礙必填）</td></tr>
+<tr><td><code>&lt;table&gt;&lt;thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;&lt;td&gt;</code></td><td>表格 / 表頭區 / 內容區 / 列 / 標題格 / 資料格</td></tr>
+<tr><td><code>&lt;form action="" method="post"&gt;</code></td><td>表單容器</td></tr>
+<tr><td><code>&lt;input type="text/number/email/date"&gt;</code></td><td>各式輸入欄</td></tr>
+<tr><td><code>&lt;label for="id"&gt;</code></td><td>欄位標籤（點它會聚焦對應欄，無障礙重要）</td></tr>
+<tr><td><code>&lt;select&gt;&lt;option&gt;</code></td><td>下拉選單</td></tr>
+<tr><td><code>&lt;textarea&gt;</code> / <code>&lt;button&gt;</code></td><td>多行輸入 / 按鈕</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== CSS ===== -->
+<div class="lookup-block" id="t-css">
+<h3>CSS 屬性速查</h3>
+
+<h4>選擇器 (Selectors)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>選到誰</th></tr></thead><tbody>
+<tr><td><code>p</code></td><td>所有 &lt;p&gt; 元素（標籤選擇器）</td></tr>
+<tr><td><code>.box</code></td><td>所有 class="box" 的元素（class 選擇器，最常用）</td></tr>
+<tr><td><code>#main</code></td><td>id="main" 的元素（id 唯一）</td></tr>
+<tr><td><code>div p</code></td><td>div 內的所有 p（後代）</td></tr>
+<tr><td><code>a:hover</code></td><td>滑鼠移上連結時（偽類）</td></tr>
+<tr><td><code>li:nth-child(even)</code></td><td>偶數項（斑馬條紋常用）</td></tr>
+<tr><td><code>input:focus</code></td><td>欄位被點選/聚焦時</td></tr>
+</tbody></table></div>
+
+<h4>盒模型 (Box Model)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>屬性</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>width / height</code></td><td>內容寬高</td></tr>
+<tr><td><code>padding</code></td><td>內距：邊框與內容之間</td></tr>
+<tr><td><code>border</code></td><td>邊框：<code>1px solid #ccc</code></td></tr>
+<tr><td><code>margin</code></td><td>外距：元素與外部之間（<code>margin:0 auto</code> 水平置中）</td></tr>
+<tr><td><code>box-sizing: border-box</code></td><td>讓 width 含 padding+border（強烈建議全域設）</td></tr>
+</tbody></table></div>
+
+<h4>Flexbox（一維排版）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>屬性（加在容器）</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>display: flex</code></td><td>啟用 flex；子元素變橫向排列</td></tr>
+<tr><td><code>flex-direction: row / column</code></td><td>主軸方向：橫 / 直</td></tr>
+<tr><td><code>justify-content</code></td><td>主軸對齊：<code>center</code> <code>space-between</code> <code>flex-end</code></td></tr>
+<tr><td><code>align-items</code></td><td>交叉軸對齊：<code>center</code> <code>stretch</code> <code>flex-start</code></td></tr>
+<tr><td><code>gap</code></td><td>子元素間距（取代邊距 hack）</td></tr>
+<tr><td><code>flex-wrap: wrap</code></td><td>放不下時自動換行</td></tr>
+<tr><td><code>flex: 1</code>（加在子元素）</td><td>讓子元素彈性填滿剩餘空間</td></tr>
+</tbody></table></div>
+
+<h4>Grid（二維排版）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>屬性</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>display: grid</code></td><td>啟用網格</td></tr>
+<tr><td><code>grid-template-columns: 1fr 1fr</code></td><td>兩等寬欄；<code>fr</code>=剩餘空間比例</td></tr>
+<tr><td><code>repeat(3, 1fr)</code></td><td>三等欄的簡寫</td></tr>
+<tr><td><code>minmax(200px, 1fr)</code></td><td>欄寬最小 200px、可彈性放大</td></tr>
+<tr><td><code>gap: 16px</code></td><td>格線間距</td></tr>
+</tbody></table></div>
+
+<h4>文字 · 顏色 · 其他常用</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>屬性</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>color / background</code></td><td>文字色 / 背景</td></tr>
+<tr><td><code>font-size / font-weight</code></td><td>字級 / 粗細（<code>700</code> 或 <code>bold</code>）</td></tr>
+<tr><td><code>line-height</code></td><td>行高（1.5~1.8 較好讀）</td></tr>
+<tr><td><code>text-align: center</code></td><td>文字置中</td></tr>
+<tr><td><code>border-radius</code></td><td>圓角</td></tr>
+<tr><td><code>box-shadow</code></td><td>陰影：<code>0 1px 3px rgba(0,0,0,.1)</code></td></tr>
+<tr><td><code>word-break: break-all</code></td><td>長字/長 URL 強制斷行，避免撐破版面</td></tr>
+<tr><td><code>@media (max-width:768px){ }</code></td><td>RWD 斷點：螢幕小於 768px 時套用</td></tr>
+</tbody></table></div>
+
+<h4>顏色與單位</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>#faf8f4</code></td><td>16 進位色碼（RRGGBB）</td></tr>
+<tr><td><code>rgb(250,248,244)</code> / <code>rgba(...,.5)</code></td><td>RGB；a 為透明度 0~1</td></tr>
+<tr><td><code>px</code></td><td>絕對像素</td></tr>
+<tr><td><code>rem / em</code></td><td>相對字級（rem 相對根、em 相對父層）</td></tr>
+<tr><td><code>% / vw / vh</code></td><td>百分比 / 視窗寬 / 視窗高</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== PYTHON ===== -->
+<!-- ===== CSS ADVANCED ===== -->
+<div class="lookup-block" id="t-cssadv">
+<h3>CSS 進階速查</h3>
+
+<h4>Transition 過渡</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>transition: all .2s</code></td><td>所有屬性 0.2 秒平滑過渡</td></tr>
+<tr><td><code>transition: color .3s ease</code></td><td>指定屬性與緩動曲線</td></tr>
+<tr><td><code>transition: transform .2s, opacity .2s</code></td><td>多個屬性各自過渡</td></tr>
+<tr><td><code>ease / linear / ease-in-out</code></td><td>常用緩動曲線</td></tr>
+</tbody></table></div>
+
+<h4>Transform 變形</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>transform: scale(1.1)</code></td><td>放大 1.1 倍</td></tr>
+<tr><td><code>transform: rotate(45deg)</code></td><td>旋轉 45 度</td></tr>
+<tr><td><code>transform: translate(10px, 5px)</code></td><td>位移</td></tr>
+<tr><td><code>transform: translateY(-50%)</code></td><td>常用的垂直置中技巧</td></tr>
+<tr><td><code>transform-origin: center</code></td><td>變形的基準點</td></tr>
+</tbody></table></div>
+
+<h4>Animation 動畫</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>@keyframes spin { from{} to{} }</code></td><td>定義動畫的起訖狀態</td></tr>
+<tr><td><code>animation: spin 2s linear infinite</code></td><td>套用：名稱 時間 曲線 次數</td></tr>
+<tr><td><code>@keyframes x { 0%{} 50%{} 100%{} }</code></td><td>多階段動畫</td></tr>
+</tbody></table></div>
+
+<h4>漸層與陰影</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>linear-gradient(180deg, #a, #b)</code></td><td>線性漸層（上到下）</td></tr>
+<tr><td><code>radial-gradient(circle, #a, #b)</code></td><td>放射狀漸層</td></tr>
+<tr><td><code>box-shadow: 0 2px 8px rgba(0,0,0,.1)</code></td><td>外陰影（x y 模糊 顏色）</td></tr>
+<tr><td><code>text-shadow: 1px 1px 2px #ccc</code></td><td>文字陰影</td></tr>
+</tbody></table></div>
+
+<h4>定位與層級</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>position: relative</code></td><td>相對自身原位（常作定位基準）</td></tr>
+<tr><td><code>position: absolute</code></td><td>相對最近的定位祖先</td></tr>
+<tr><td><code>position: fixed</code></td><td>相對視窗固定不動</td></tr>
+<tr><td><code>position: sticky</code></td><td>捲動到邊界才黏住</td></tr>
+<tr><td><code>top / right / bottom / left</code></td><td>配合定位設定偏移</td></tr>
+<tr><td><code>z-index: 10</code></td><td>堆疊層級，大的蓋小的</td></tr>
+<tr><td><code>overflow: hidden / auto / scroll</code></td><td>內容溢出處理</td></tr>
+</tbody></table></div>
+
+<h4>CSS 變數與實用</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>:root { --c: #333 }</code></td><td>定義全域 CSS 變數</td></tr>
+<tr><td><code>color: var(--c)</code></td><td>使用變數（改一處全站變）</td></tr>
+<tr><td><code>opacity: 0.5</code></td><td>透明度（0 全透明～1 不透明）</td></tr>
+<tr><td><code>cursor: pointer</code></td><td>滑鼠變手指（可點擊感）</td></tr>
+<tr><td><code>object-fit: cover</code></td><td>圖片填滿容器不變形</td></tr>
+<tr><td><code>backdrop-filter: blur(8px)</code></td><td>背景毛玻璃效果</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== PYTHON ===== -->
+<div class="lookup-block" id="t-py">
+<h3>Python 速查</h3>
+
+<h4>常用內建函式</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>函式</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>print(x)</code></td><td>輸出到畫面</td></tr>
+<tr><td><code>len(x)</code></td><td>長度（字串/清單/字典…）</td></tr>
+<tr><td><code>type(x)</code></td><td>查型別</td></tr>
+<tr><td><code>int() float() str() bool()</code></td><td>型別轉換</td></tr>
+<tr><td><code>range(5)</code></td><td>0~4 的數列（給 for 用）</td></tr>
+<tr><td><code>enumerate(seq)</code></td><td>同時取索引與值</td></tr>
+<tr><td><code>zip(a, b)</code></td><td>把多個序列配對打包</td></tr>
+<tr><td><code>sorted(x, key=..., reverse=True)</code></td><td>排序（回傳新清單）</td></tr>
+<tr><td><code>sum() min() max()</code></td><td>總和 / 最小 / 最大</td></tr>
+<tr><td><code>round(x, 2)</code></td><td>四捨五入到 2 位小數</td></tr>
+<tr><td><code>abs(x)</code></td><td>絕對值</td></tr>
+<tr><td><code>any() all()</code></td><td>任一為真 / 全部為真</td></tr>
+</tbody></table></div>
+
+<h4>字串方法 (str methods)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>方法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>s.strip()</code></td><td>去頭尾空白（讀檔清資料必用）</td></tr>
+<tr><td><code>s.lower() / s.upper()</code></td><td>轉小寫 / 大寫</td></tr>
+<tr><td><code>s.replace("a","b")</code></td><td>取代</td></tr>
+<tr><td><code>s.split(",")</code></td><td>依分隔符切成清單</td></tr>
+<tr><td><code>",".join(list)</code></td><td>用分隔符把清單組回字串</td></tr>
+<tr><td><code>s.startswith() / s.endswith()</code></td><td>判斷開頭 / 結尾</td></tr>
+<tr><td><code>"abc" in s</code></td><td>是否包含子字串</td></tr>
+<tr><td><code>s.find("x")</code></td><td>找子字串位置（找不到回 -1）</td></tr>
+<tr><td><code>f"HR={hr}"</code></td><td>f-string：直接內嵌變數（最推薦的格式化）</td></tr>
+</tbody></table></div>
+
+<h4>List 方法</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>方法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>lst.append(x)</code></td><td>尾端加一個</td></tr>
+<tr><td><code>lst.extend([..])</code></td><td>接上另一串</td></tr>
+<tr><td><code>lst.insert(i, x)</code></td><td>插入指定位置</td></tr>
+<tr><td><code>lst.remove(x) / lst.pop(i)</code></td><td>移除值 / 取出並移除索引 i</td></tr>
+<tr><td><code>lst.sort()</code></td><td>就地排序（改原清單）</td></tr>
+<tr><td><code>lst[1:4]</code> / <code>lst[::-1]</code></td><td>切片 / 反轉</td></tr>
+<tr><td><code>lst.count(x) / lst.index(x)</code></td><td>計次 / 找位置</td></tr>
+</tbody></table></div>
+
+<h4>Dict 方法</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>方法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>d["key"]</code></td><td>取值（key 不在會報錯）</td></tr>
+<tr><td><code>d.get("key", 預設)</code></td><td>取值，不在回預設（安全）</td></tr>
+<tr><td><code>d["key"] = v</code></td><td>新增 / 更新</td></tr>
+<tr><td><code>d.keys() / d.values() / d.items()</code></td><td>取所有鍵 / 值 / 鍵值對</td></tr>
+<tr><td><code>for k, v in d.items():</code></td><td>逐一走訪鍵值</td></tr>
+<tr><td><code>"key" in d</code></td><td>判斷 key 是否存在</td></tr>
+</tbody></table></div>
+
+<h4>推導式 &amp; 慣用語法</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>[x*2 for x in nums]</code></td><td>list 推導式：對每個元素做運算</td></tr>
+<tr><td><code>[x for x in nums if x&gt;0]</code></td><td>帶條件過濾</td></tr>
+<tr><td><code>{k: v for k, v in pairs}</code></td><td>dict 推導式</td></tr>
+<tr><td><code>lambda x: x+1</code></td><td>匿名小函式（常配 sorted 的 key）</td></tr>
+<tr><td><code>with open("f.txt") as fp:</code></td><td>開檔（離開區塊自動關閉，安全）</td></tr>
+<tr><td><code>a, b = b, a</code></td><td>同時交換兩值</td></tr>
+</tbody></table></div>
+
+<h4>常用標準庫 (免安裝)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>模組</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>math</code></td><td>數學：<code>sqrt, log, ceil, floor, pi</code></td></tr>
+<tr><td><code>statistics</code></td><td>基本統計：<code>mean, median, stdev</code></td></tr>
+<tr><td><code>datetime</code></td><td>日期時間運算</td></tr>
+<tr><td><code>random</code></td><td>亂數、隨機抽樣</td></tr>
+<tr><td><code>csv / json</code></td><td>讀寫 CSV / JSON 檔</td></tr>
+<tr><td><code>re</code></td><td>正規表達式（文字比對/擷取）</td></tr>
+<tr><td><code>os / pathlib</code></td><td>檔案路徑、目錄操作</td></tr>
+<tr><td><code>collections</code></td><td><code>Counter</code>（計次）、<code>defaultdict</code> 等利器</td></tr>
+</tbody></table></div>
+
+<h4>Git 常用指令</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">git init</code></td><td>把目前資料夾變成 Git repo</td></tr>
+<tr><td><code class="g">git status</code></td><td>看目前有哪些改動（最常打）</td></tr>
+<tr><td><code class="g">git add .</code></td><td>把所有改動加入「待存檔」</td></tr>
+<tr><td><code class="g">git commit -m "說明"</code></td><td>存檔，附說明訊息</td></tr>
+<tr><td><code class="g">git log --oneline</code></td><td>看歷史紀錄（精簡）</td></tr>
+<tr><td><code class="g">git diff</code></td><td>看改了哪些內容</td></tr>
+<tr><td><code class="g">git branch / git switch -c 名稱</code></td><td>列分支 / 開新分支並切過去</td></tr>
+<tr><td><code class="g">git pull / git push</code></td><td>從遠端拉下 / 推上去</td></tr>
+<tr><td><code class="g">git clone 網址</code></td><td>複製一份遠端 repo 到本機</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== PYTHON ADVANCED ===== -->
+<div class="lookup-block" id="t-pyadv">
+<h3>Python 進階語法</h3>
+
+<h4>f-string 格式化</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>f"{x:.2f}"</code></td><td>固定 2 位小數</td></tr>
+<tr><td><code>f"{x:,}"</code></td><td>千分位逗號（1,234,567）</td></tr>
+<tr><td><code>f"{x:.1%}"</code></td><td>百分比 1 位（0.05 → 5.0%）</td></tr>
+<tr><td><code>f"{x:&gt;8}"</code> <code>f"{x:&lt;8}"</code> <code>f"{x:^8}"</code></td><td>右 / 左 / 置中對齊，寬 8</td></tr>
+<tr><td><code>f"{x:08.2f}"</code></td><td>補零，總寬 8、2 位小數</td></tr>
+<tr><td><code>f"{x=}"</code></td><td>除錯神器：印出「x=值」</td></tr>
+<tr><td><code>f"{d:%Y-%m-%d}"</code></td><td>日期格式化</td></tr>
+</tbody></table></div>
+
+<h4>函式進階參數</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>def f(*args)</code></td><td>收集多個位置參數成 tuple</td></tr>
+<tr><td><code>def f(**kwargs)</code></td><td>收集關鍵字參數成 dict</td></tr>
+<tr><td><code>f(*mylist)</code></td><td>把清單拆開當位置參數傳入</td></tr>
+<tr><td><code>f(**mydict)</code></td><td>把字典拆成關鍵字參數傳入</td></tr>
+<tr><td><code>lambda x: x*2</code></td><td>匿名小函式</td></tr>
+</tbody></table></div>
+
+<h4>型別提示 (Type Hints)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>def f(x: int) -&gt; str:</code></td><td>參數與回傳的型別</td></tr>
+<tr><td><code>name: str = "Wu"</code></td><td>變數型別註記</td></tr>
+<tr><td><code>list[int]</code> / <code>dict[str, float]</code></td><td>容器內元素型別</td></tr>
+<tr><td><code>int | None</code></td><td>可為 int 或 None</td></tr>
+<tr><td colspan="2">提示用、不強制執行；配 <code>mypy</code> 可做靜態檢查</td></tr>
+</tbody></table></div>
+
+<h4>切片與解包</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>lst[1:4]</code> / <code>lst[:3]</code> / <code>lst[2:]</code></td><td>切片（取子序列）</td></tr>
+<tr><td><code>lst[::-1]</code></td><td>反轉</td></tr>
+<tr><td><code>lst[::2]</code></td><td>每隔一個取</td></tr>
+<tr><td><code>a, b = b, a</code></td><td>同時交換兩值</td></tr>
+<tr><td><code>first, *rest = [1,2,3,4]</code></td><td>first=1、rest=[2,3,4]</td></tr>
+<tr><td><code>a, *_, z = seq</code></td><td>取頭尾、中間忽略</td></tr>
+</tbody></table></div>
+
+<h4>其他高頻慣用語法</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>x if 條件 else y</code></td><td>三元運算子（條件表達式）</td></tr>
+<tr><td><code>if (n := len(a)) &gt; 10:</code></td><td>海象運算子（賦值兼判斷）</td></tr>
+<tr><td><code>{**d1, **d2}</code></td><td>合併兩字典</td></tr>
+<tr><td><code>[*a, *b]</code></td><td>合併兩清單</td></tr>
+<tr><td><code>val = d.get(k, 預設)</code></td><td>安全取值，key 不在回預設</td></tr>
+<tr><td><code>with open(f) as fp:</code></td><td>context manager，離開區塊自動關閉</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== PYTHON ERRORS ===== -->
+<div class="lookup-block" id="t-pyerr">
+<h3>Python 常見錯誤訊息對照</h3>
+<div class="box info"><div class="t">ℹ️ 用法</div><p>報錯先看 traceback <strong>最後一行</strong>的錯誤類型，對照下表找方向。</p></div>
+
+<h4>語法 / 縮排</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>錯誤</th><th>意思 → 常見原因 / 修法</th></tr></thead><tbody>
+<tr><td><code>SyntaxError</code></td><td>語法錯，程式跑不起來 → 漏冒號、括號或引號沒閉合</td></tr>
+<tr><td><code>IndentationError</code></td><td>縮排不一致 → 空格與 Tab 混用、層級對不齊</td></tr>
+</tbody></table></div>
+
+<h4>名稱 / 型別 / 值</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>錯誤</th><th>意思 → 常見原因 / 修法</th></tr></thead><tbody>
+<tr><td><code>NameError</code></td><td>用了未定義的名字 → 變數拼錯、忘了先賦值、忘 import</td></tr>
+<tr><td><code>TypeError</code></td><td>型別用錯 → 字串+數字、對 None 做運算、參數個數不對</td></tr>
+<tr><td><code>ValueError</code></td><td>型別對但值不合法 → <code>int("abc")</code>、對空序列取 max</td></tr>
+<tr><td><code>AttributeError</code></td><td>物件沒這屬性/方法 → 方法名拼錯、對 None 呼叫方法</td></tr>
+</tbody></table></div>
+
+<h4>容器 / 索引</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>錯誤</th><th>意思 → 常見原因 / 修法</th></tr></thead><tbody>
+<tr><td><code>KeyError</code></td><td>字典沒這個 key → 改用 <code>d.get(k)</code> 或先 <code>if k in d</code></td></tr>
+<tr><td><code>IndexError</code></td><td>索引超出範圍 → 清單沒那麼長、off-by-one</td></tr>
+</tbody></table></div>
+
+<h4>匯入 / 檔案 / 其他</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>錯誤</th><th>意思 → 常見原因 / 修法</th></tr></thead><tbody>
+<tr><td><code>ModuleNotFoundError</code></td><td>找不到模組 → 沒 pip install、虛擬環境沒啟用</td></tr>
+<tr><td><code>ImportError</code></td><td>匯入失敗 → 名稱錯或套件版本不符</td></tr>
+<tr><td><code>FileNotFoundError</code></td><td>檔案不存在 → 路徑錯、相對路徑基準不對</td></tr>
+<tr><td><code>ZeroDivisionError</code></td><td>除以零 → 分母先檢查非零</td></tr>
+<tr><td><code>RecursionError</code></td><td>遞迴太深 → 忘了寫終止條件 (base case)</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== PYTHON STDLIB ===== -->
+<div class="lookup-block" id="t-pylib">
+<h3>Python 標準庫深入</h3>
+
+<h4>pathlib（現代檔案路徑）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>from pathlib import Path</code></td><td>匯入</td></tr>
+<tr><td><code>Path("a/b.txt")</code></td><td>建立路徑物件</td></tr>
+<tr><td><code>p.exists() / p.is_file() / p.is_dir()</code></td><td>存在性檢查</td></tr>
+<tr><td><code>p.name / p.stem / p.suffix</code></td><td>全名 / 主檔名 / 副檔名</td></tr>
+<tr><td><code>p.parent</code></td><td>上層目錄</td></tr>
+<tr><td><code>p / "sub" / "f.csv"</code></td><td>用 / 串接路徑（跨平台安全）</td></tr>
+<tr><td><code>p.read_text() / p.write_text(s)</code></td><td>讀 / 寫文字檔</td></tr>
+<tr><td><code>Path.home() / Path.cwd()</code></td><td>家目錄 / 目前目錄</td></tr>
+<tr><td><code>list(p.glob("*.csv"))</code></td><td>找符合樣式的檔</td></tr>
+</tbody></table></div>
+
+<h4>collections</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>Counter(seq)</code></td><td>計次；<code>.most_common(3)</code> 取前三</td></tr>
+<tr><td><code>defaultdict(list)</code></td><td>預設值字典，免先建 key</td></tr>
+<tr><td><code>namedtuple("P", "x y")</code></td><td>有欄位名的 tuple</td></tr>
+<tr><td><code>deque()</code></td><td>雙端佇列，頭尾增刪都 O(1)</td></tr>
+</tbody></table></div>
+
+<h4>itertools</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>chain(a, b)</code></td><td>串接多個可迭代物</td></tr>
+<tr><td><code>combinations(seq, 2)</code></td><td>所有兩兩組合</td></tr>
+<tr><td><code>permutations(seq, 2)</code></td><td>排列</td></tr>
+<tr><td><code>product(a, b)</code></td><td>笛卡兒積（巢狀迴圈簡寫）</td></tr>
+<tr><td><code>groupby(seq, key)</code></td><td>連續分組</td></tr>
+<tr><td><code>count() / cycle() / repeat()</code></td><td>無限迭代器</td></tr>
+</tbody></table></div>
+
+<h4>datetime</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>from datetime import datetime, date, timedelta</code></td><td>匯入</td></tr>
+<tr><td><code>datetime.now() / date.today()</code></td><td>現在 / 今天</td></tr>
+<tr><td><code>dt.strftime("%Y-%m-%d")</code></td><td>日期 → 字串</td></tr>
+<tr><td><code>datetime.strptime(s, "%Y-%m-%d")</code></td><td>字串 → 日期</td></tr>
+<tr><td><code>dt + timedelta(days=7)</code></td><td>日期加減</td></tr>
+<tr><td><code>(d2 - d1).days</code></td><td>相差天數</td></tr>
+</tbody></table></div>
+
+<h4>json / csv</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>json.loads(s) / json.dumps(obj, ensure_ascii=False)</code></td><td>字串 ↔ 物件（中文不轉碼）</td></tr>
+<tr><td><code>json.load(fp) / json.dump(obj, fp)</code></td><td>檔案讀 / 寫</td></tr>
+<tr><td><code>csv.DictReader(fp)</code></td><td>每列讀成 dict</td></tr>
+<tr><td><code>csv.DictWriter(fp, fieldnames=[...])</code></td><td>把 dict 寫成 CSV</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<div class="lookup-block" id="t-js">
+<h3>JavaScript 速查</h3>
+
+<h4>變數 · 型別 · 輸出</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>let x = 1</code></td><td>宣告可變變數</td></tr>
+<tr><td><code>const PI = 3.14</code></td><td>宣告常數（預設優先用）</td></tr>
+<tr><td><code>console.log(x)</code></td><td>印到主控台（等同 print）</td></tr>
+<tr><td><code>typeof x</code></td><td>查型別</td></tr>
+<tr><td><code>`值=${x}`</code></td><td>樣板字面值，反引號內嵌變數</td></tr>
+<tr><td><code>=== / !==</code></td><td>嚴格相等 / 不等（建議用，避免隱式轉型）</td></tr>
+<tr><td><code>null / undefined</code></td><td>無值 / 未定義</td></tr>
+<tr><td><code>// 行內　/* 區塊 */</code></td><td>註解</td></tr>
+</tbody></table></div>
+
+<h4>陣列 (Array) 方法</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>方法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>arr.push(x) / arr.pop()</code></td><td>尾端加 / 移除</td></tr>
+<tr><td><code>arr.length</code></td><td>長度</td></tr>
+<tr><td><code>arr.map(fn)</code></td><td>每項轉換成新陣列（對應 list 推導式）</td></tr>
+<tr><td><code>arr.filter(fn)</code></td><td>過濾符合條件的</td></tr>
+<tr><td><code>arr.forEach(fn)</code></td><td>逐項執行（對應 for 迴圈）</td></tr>
+<tr><td><code>arr.find(fn)</code></td><td>找第一個符合的</td></tr>
+<tr><td><code>arr.includes(x)</code></td><td>是否包含</td></tr>
+<tr><td><code>arr.slice(1,3)</code></td><td>取子陣列（切片）</td></tr>
+<tr><td><code>arr.sort((a,b)=&gt;a-b)</code></td><td>排序；數字一定要給比較函式</td></tr>
+<tr><td><code>arr.join(",")</code></td><td>接成字串</td></tr>
+</tbody></table></div>
+
+<h4>物件 (Object)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>const o = {hr:80}</code></td><td>建立物件（對應 dict）</td></tr>
+<tr><td><code>o.hr</code> / <code>o["hr"]</code></td><td>取值</td></tr>
+<tr><td><code>o.bp = 120</code></td><td>新增 / 更新</td></tr>
+<tr><td><code>Object.keys(o) / Object.values(o)</code></td><td>取所有鍵 / 值</td></tr>
+<tr><td><code>const {hr} = o</code></td><td>解構：取出 hr 成獨立變數</td></tr>
+</tbody></table></div>
+
+<h4>DOM 與事件</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>document.querySelector("#id")</code></td><td>找第一個符合的元素</td></tr>
+<tr><td><code>document.querySelectorAll(".cls")</code></td><td>找全部（回傳 NodeList）</td></tr>
+<tr><td><code>el.textContent</code></td><td>讀 / 寫純文字（安全）</td></tr>
+<tr><td><code>el.innerHTML</code></td><td>讀 / 寫 HTML（注意 XSS 風險）</td></tr>
+<tr><td><code>el.value</code></td><td>表單欄位的值</td></tr>
+<tr><td><code>el.addEventListener("click", fn)</code></td><td>綁定事件</td></tr>
+<tr><td><code>el.classList.toggle("on")</code></td><td>切換 class（add / remove 同理）</td></tr>
+<tr><td><code>el.style.color = "red"</code></td><td>直接改樣式</td></tr>
+</tbody></table></div>
+
+<h4>函式 · 非同步</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>function f(){ }</code></td><td>傳統函式宣告</td></tr>
+<tr><td><code>const f = () =&gt; { }</code></td><td>箭頭函式（簡寫，回呼常用）</td></tr>
+<tr><td><code>async function f(){ await ... }</code></td><td>非同步函式（等待不卡住）</td></tr>
+<tr><td><code>fetch(url).then(r =&gt; r.json())</code></td><td>取網路資料（API 呼叫）</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== SQL ===== -->
+<div class="lookup-block" id="t-sql">
+<h3>SQL 速查</h3>
+
+<h4>查詢子句（撰寫順序固定）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>子句</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>SELECT 欄位</code></td><td>要哪些欄（<code>*</code> 代表全部）</td></tr>
+<tr><td><code>FROM 表</code></td><td>從哪張表</td></tr>
+<tr><td><code>WHERE 條件</code></td><td>篩選列（在分組前）</td></tr>
+<tr><td><code>GROUP BY 欄</code></td><td>依該欄分組</td></tr>
+<tr><td><code>HAVING 條件</code></td><td>對分組後的結果再篩選</td></tr>
+<tr><td><code>ORDER BY 欄 ASC/DESC</code></td><td>排序（DESC 由大到小）</td></tr>
+<tr><td><code>LIMIT n</code></td><td>只取前 n 筆</td></tr>
+<tr><td><code>SELECT DISTINCT 欄</code></td><td>去除重複值</td></tr>
+</tbody></table></div>
+
+<h4>WHERE 條件運算子</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>運算子</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>= != &lt; &gt; &lt;= &gt;=</code></td><td>比較</td></tr>
+<tr><td><code>AND / OR / NOT</code></td><td>邏輯組合</td></tr>
+<tr><td><code>BETWEEN a AND b</code></td><td>介於範圍（含端點）</td></tr>
+<tr><td><code>IN (1,2,3)</code></td><td>屬於清單之一</td></tr>
+<tr><td><code>LIKE 'A%'</code></td><td>模糊比對（% 任意多字、_ 單一字）</td></tr>
+<tr><td><code>IS NULL / IS NOT NULL</code></td><td>空值判斷（不可用 = NULL）</td></tr>
+</tbody></table></div>
+
+<h4>聚合函式（配 GROUP BY）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>函式</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>COUNT(*)</code></td><td>筆數</td></tr>
+<tr><td><code>SUM(x) / AVG(x)</code></td><td>總和 / 平均</td></tr>
+<tr><td><code>MIN(x) / MAX(x)</code></td><td>最小 / 最大</td></tr>
+</tbody></table></div>
+
+<h4>JOIN 跨表合併</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>INNER JOIN ... ON</code></td><td>兩表都有對應才保留（最常用）</td></tr>
+<tr><td><code>LEFT JOIN ... ON</code></td><td>保留左表全部，右表沒對應補 NULL</td></tr>
+<tr><td><code>RIGHT JOIN ... ON</code></td><td>保留右表全部</td></tr>
+<tr><td><code>ON a.id = b.a_id</code></td><td>串接條件（用哪個欄對應）</td></tr>
+</tbody></table></div>
+
+<h4>資料異動 (DML / DDL)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>INSERT INTO t (c1,c2) VALUES (...)</code></td><td>新增列</td></tr>
+<tr><td><code>UPDATE t SET c=v WHERE ...</code></td><td>修改（⚠️ 務必加 WHERE，否則全表被改）</td></tr>
+<tr><td><code>DELETE FROM t WHERE ...</code></td><td>刪除（⚠️ 務必加 WHERE，否則全表清空）</td></tr>
+<tr><td><code>CREATE TABLE t (...)</code></td><td>建立新表</td></tr>
+<tr><td><code>ALTER TABLE / DROP TABLE</code></td><td>修改結構 / 刪除整張表</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== REGEX ===== -->
+<div class="lookup-block" id="t-regex">
+<h3>正規表達式 Regex 速查</h3>
+<div class="box info"><div class="t">ℹ️ 什麼是 Regex</div><p>正規表達式是「描述文字模式」的迷你語言，用來<strong>搜尋、比對、取代</strong>符合某規則的字串（如所有 email、日期、檢驗值）。一次學會，跨 Python／JavaScript／grep／編輯器通用。</p></div>
+
+<h4>字元類 (Character Classes)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>符號</th><th>比對</th></tr></thead><tbody>
+<tr><td><code>.</code></td><td>任意單一字元（換行除外）</td></tr>
+<tr><td><code>\d</code> / <code>\D</code></td><td>數字 / 非數字</td></tr>
+<tr><td><code>\w</code> / <code>\W</code></td><td>字母數字底線 / 非此</td></tr>
+<tr><td><code>\s</code> / <code>\S</code></td><td>空白字元 / 非空白</td></tr>
+<tr><td><code>[abc]</code></td><td>a、b、c 其中之一</td></tr>
+<tr><td><code>[^abc]</code></td><td>除了 a、b、c 以外</td></tr>
+<tr><td><code>[a-z0-9]</code></td><td>範圍：小寫字母或數字</td></tr>
+</tbody></table></div>
+
+<h4>量詞 (Quantifiers)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>符號</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>*</code></td><td>0 個或多個</td></tr>
+<tr><td><code>+</code></td><td>1 個或多個</td></tr>
+<tr><td><code>?</code></td><td>0 或 1 個（可有可無）</td></tr>
+<tr><td><code>{3}</code></td><td>剛好 3 個</td></tr>
+<tr><td><code>{2,5}</code></td><td>2 到 5 個</td></tr>
+<tr><td><code>{2,}</code></td><td>至少 2 個</td></tr>
+<tr><td><code>+?</code> <code>*?</code></td><td>非貪婪（盡量少抓）</td></tr>
+</tbody></table></div>
+
+<h4>位置與群組</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>符號</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>^</code> / <code>$</code></td><td>字串開頭 / 結尾</td></tr>
+<tr><td><code>\b</code></td><td>單字邊界</td></tr>
+<tr><td><code>( )</code></td><td>群組（可擷取，供取出/反向參照）</td></tr>
+<tr><td><code>(?: )</code></td><td>非擷取群組（只分組不擷取）</td></tr>
+<tr><td><code>a|b</code></td><td>a 或 b</td></tr>
+<tr><td><code>\1</code></td><td>反向參照第 1 個群組</td></tr>
+</tbody></table></div>
+
+<h4>Python <code>re</code> 常用函式</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>函式</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>re.search(p, s)</code></td><td>找第一個符合（回 match 物件或 None）</td></tr>
+<tr><td><code>re.findall(p, s)</code></td><td>找出所有符合，回清單</td></tr>
+<tr><td><code>re.sub(p, repl, s)</code></td><td>把符合的全部取代</td></tr>
+<tr><td><code>re.match(p, s)</code></td><td>從<b>開頭</b>比對</td></tr>
+<tr><td><code>m.group(1)</code></td><td>取第 1 個括號群組的內容</td></tr>
+<tr><td><code>r"\d+"</code></td><td>raw string：寫 regex 一律加 r 前綴</td></tr>
+</tbody></table></div>
+
+<h4>實用範例</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>樣式</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>\d+</code></td><td>抓所有整數（如檢驗值）</td></tr>
+<tr><td><code>\d+\.?\d*</code></td><td>抓整數或小數</td></tr>
+<tr><td><code>[\w.]+@[\w.]+</code></td><td>粗略抓 email</td></tr>
+<tr><td><code>\d{4}-\d{2}-\d{2}</code></td><td>抓日期 YYYY-MM-DD</td></tr>
+<tr><td><code>[A-Z][12]\d{8}</code></td><td>台灣身分證格式（1 英文+性別碼+8 數字）</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== JSON / YAML ===== -->
+<div class="lookup-block" id="t-json">
+<h3>JSON / YAML 格式速查</h3>
+<div class="box info"><div class="t">ℹ️ 差異</div><p>JSON 給<strong>機器</strong>（API 傳輸）、YAML 給<strong>人</strong>（設定檔較好讀），兩者常可互轉。</p></div>
+
+<h4>JSON（資料交換）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>{"key": "value"}</code></td><td>物件；鍵一定用雙引號</td></tr>
+<tr><td><code>[1, 2, 3]</code></td><td>陣列</td></tr>
+<tr><td><code>"字串" / 12.5 / true / false / null</code></td><td>可用的值型別</td></tr>
+<tr><td><code>{"a": {"b": [1, 2]}}</code></td><td>可巢狀</td></tr>
+<tr><td>⚠️ 最後一項後<b>不可</b>有逗號</td><td>常見的格式錯誤</td></tr>
+<tr><td>⚠️ <b>不能</b>寫註解</td><td>JSON 不支援註解</td></tr>
+</tbody></table></div>
+
+<h4>YAML（設定檔：compose、CI、各式 config）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>意義</th></tr></thead><tbody>
+<tr><td><code>key: value</code></td><td>鍵值對（冒號後要空格）</td></tr>
+<tr><td>縮排表層級</td><td>只能用<b>空格</b>，不可用 Tab</td></tr>
+<tr><td><code>- item</code></td><td>清單項（前面短橫＋空格）</td></tr>
+<tr><td><code># 註解</code></td><td>YAML 可寫註解</td></tr>
+<tr><td><code>name: "字串"</code></td><td>引號通常可省，含特殊字元才需要</td></tr>
+<tr><td><code>text: |</code></td><td>多行字串，保留換行</td></tr>
+<tr><td><code>true / false / null</code></td><td>布林與空值</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== MARKDOWN ===== -->
+<div class="lookup-block" id="t-md">
+<h3>Markdown 語法速查</h3>
+<div class="box info"><div class="t">ℹ️ 用途</div><p>用於筆記、README、GitHub、ChatGPT、Obsidian（大歐）——純文字寫出排版。</p></div>
+
+<h4>文字格式</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code># 標題</code> / <code>##</code> / <code>###</code></td><td>一～三級標題</td></tr>
+<tr><td><code>**粗體**</code></td><td>粗體</td></tr>
+<tr><td><code>*斜體*</code></td><td>斜體</td></tr>
+<tr><td><code>~~刪除線~~</code></td><td>刪除線</td></tr>
+<tr><td><code>`行內程式碼`</code></td><td>等寬標示</td></tr>
+<tr><td><code>&gt; 引用文字</code></td><td>區塊引用</td></tr>
+<tr><td><code>---</code></td><td>水平分隔線</td></tr>
+</tbody></table></div>
+
+<h4>清單與連結</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>- 項目</code> / <code>* 項目</code></td><td>無序清單</td></tr>
+<tr><td><code>1. 項目</code></td><td>有序清單</td></tr>
+<tr><td><code>- [ ] 待辦</code> / <code>- [x] 完成</code></td><td>核取清單</td></tr>
+<tr><td><code>[文字](網址)</code></td><td>超連結</td></tr>
+<tr><td><code>![說明](圖網址)</code></td><td>插入圖片</td></tr>
+</tbody></table></div>
+
+<h4>程式碼與表格</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>```python … ```</code></td><td>圍欄程式碼區塊（標語言可上色）</td></tr>
+<tr><td><code>| 欄1 | 欄2 |</code> + <code>|---|---|</code></td><td>表格</td></tr>
+<tr><td><code>:---</code> <code>:---:</code> <code>---:</code></td><td>表格欄左/中/右對齊</td></tr>
+</tbody></table></div>
+
+<h4>Obsidian 專屬（大歐）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>效果</th></tr></thead><tbody>
+<tr><td><code>[[筆記名]]</code></td><td>雙向連結到另一篇筆記</td></tr>
+<tr><td><code>[[筆記名#標題]]</code></td><td>連到某篇的某段</td></tr>
+<tr><td><code>![[筆記名]]</code></td><td>嵌入整篇內容</td></tr>
+<tr><td><code>#標籤</code></td><td>標籤分類</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== SHELL ===== -->
+<div class="lookup-block" id="t-shell">
+<h3>Shell / 終端機指令速查（macOS zsh）</h3>
+
+<h4>導覽與檔案操作</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">pwd</code></td><td>顯示目前所在目錄</td></tr>
+<tr><td><code class="g">ls</code> / <code class="g">ls -la</code></td><td>列出檔案 / 含隱藏檔＋詳細</td></tr>
+<tr><td><code class="g">cd dir</code> / <code class="g">cd ..</code> / <code class="g">cd ~</code></td><td>進入 / 上一層 / 家目錄</td></tr>
+<tr><td><code class="g">mkdir name</code> / <code class="g">mkdir -p a/b/c</code></td><td>建目錄 / 含中間層</td></tr>
+<tr><td><code class="g">cp a b</code> / <code class="g">cp -r d1 d2</code></td><td>複製檔 / 遞迴複製目錄</td></tr>
+<tr><td><code class="g">mv a b</code></td><td>移動或改名</td></tr>
+<tr><td><code class="g">rm file</code> / <code class="g">rm -r dir</code></td><td>刪檔 / 刪目錄</td></tr>
+<tr><td><code class="g">rm -rf dir</code></td><td>強制遞迴刪除（⚠️ 不可復原，務必看清路徑）</td></tr>
+<tr><td><code class="g">open .</code></td><td>在 Finder 開啟目前目錄（macOS）</td></tr>
+</tbody></table></div>
+
+<h4>看內容與搜尋</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">cat file</code> / <code class="g">less file</code></td><td>全部印出 / 分頁瀏覽</td></tr>
+<tr><td><code class="g">head -n 20</code> / <code class="g">tail -n 20</code></td><td>前 / 後 20 行</td></tr>
+<tr><td><code class="g">tail -f log</code></td><td>持續追蹤新增的行（看 log）</td></tr>
+<tr><td><code class="g">grep "字" file</code></td><td>搜尋檔內文字</td></tr>
+<tr><td><code class="g">grep -r "字" dir</code></td><td>遞迴搜尋整個目錄</td></tr>
+<tr><td><code class="g">find . -name "*.py"</code></td><td>依檔名尋找</td></tr>
+<tr><td><code class="g">wc -l file</code></td><td>計算行數</td></tr>
+</tbody></table></div>
+
+<h4>管線與重導向</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>符號</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">cmd1 | cmd2</code></td><td>管線：前者輸出餵給後者</td></tr>
+<tr><td><code class="g">cmd &gt; file</code></td><td>輸出寫入檔（覆蓋）</td></tr>
+<tr><td><code class="g">cmd &gt;&gt; file</code></td><td>輸出附加到檔尾</td></tr>
+<tr><td><code class="g">cmd1 &amp;&amp; cmd2</code></td><td>前者成功才執行後者</td></tr>
+</tbody></table></div>
+
+<h4>權限 · 程序 · 環境</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">chmod +x script.sh</code></td><td>加可執行權限</td></tr>
+<tr><td><code class="g">./script.sh</code></td><td>執行目前目錄的腳本</td></tr>
+<tr><td><code class="g">sudo cmd</code></td><td>以管理員權限執行</td></tr>
+<tr><td><code class="g">ps aux | grep name</code></td><td>找執行中的程序</td></tr>
+<tr><td><code class="g">kill &lt;pid&gt;</code> / <code class="g">kill -9 &lt;pid&gt;</code></td><td>結束程序 / 強制結束</td></tr>
+<tr><td><code class="g">which python3</code></td><td>查指令的實際路徑</td></tr>
+<tr><td><code class="g">export VAR=值</code> / <code class="g">echo $VAR</code></td><td>設 / 看環境變數</td></tr>
+<tr><td><code class="g">Ctrl + C</code></td><td>中斷目前執行的指令</td></tr>
+<tr><td><code class="g">man cmd</code></td><td>查指令說明書</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== MEDICAL ===== -->
+<div class="lookup-block" id="t-med">
+<h3>醫療資料 · 統計 · 標準</h3>
+<div class="box med"><div class="t">🩺 定位</div><p>這區把「臨床/研究常見的計算與資料任務」對應到 Python 工具與公式，方便你把程式能力直接用在熟悉的領域。</p></div>
+
+<h4>醫療/科學資料分析 Python 套件</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>套件</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>pandas</code></td><td>表格資料處理（讀 CSV/Excel、篩選、分組、樞紐）——臨床資料分析主力</td></tr>
+<tr><td><code>numpy</code></td><td>數值陣列運算、向量化計算基礎</td></tr>
+<tr><td><code>scipy.stats</code></td><td>統計檢定：t 檢定、卡方、ANOVA、相關</td></tr>
+<tr><td><code>statsmodels</code></td><td>迴歸模型（線性/logistic）、含 p 值與信賴區間的完整統計輸出</td></tr>
+<tr><td><code>lifelines</code></td><td>存活分析：Kaplan-Meier、log-rank、Cox 比例風險</td></tr>
+<tr><td><code>scikit-learn</code></td><td>機器學習、ROC/AUC、混淆矩陣、交叉驗證</td></tr>
+<tr><td><code>matplotlib / seaborn</code></td><td>繪圖：折線、長條、箱型、熱圖、生存曲線</td></tr>
+<tr><td><code>pingouin</code></td><td>統計檢定的友善封裝（輸出含效果量，適合論文）</td></tr>
+<tr><td><code>pydicom</code></td><td>讀取/處理 DICOM 醫學影像檔</td></tr>
+<tr><td><code>biopython</code></td><td>生物序列、基因體資料處理</td></tr>
+</tbody></table></div>
+
+<h4>診斷指標（2×2 表）公式</h4>
+<p class="lead" style="font-size:13.5px">設 TP=真陽性、FP=偽陽性、FN=偽陰性、TN=真陰性。</p>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指標</th><th>公式</th><th>意義</th></tr></thead><tbody>
+<tr><td>敏感度 Sensitivity (Recall)</td><td><code>TP / (TP+FN)</code></td><td>有病者被驗出的比例</td></tr>
+<tr><td>特異度 Specificity</td><td><code>TN / (TN+FP)</code></td><td>沒病者被排除的比例</td></tr>
+<tr><td>陽性預測值 PPV (Precision)</td><td><code>TP / (TP+FP)</code></td><td>驗出陽性者真的有病的比例</td></tr>
+<tr><td>陰性預測值 NPV</td><td><code>TN / (TN+FN)</code></td><td>驗出陰性者真的沒病的比例</td></tr>
+<tr><td>準確率 Accuracy</td><td><code>(TP+TN) / 總數</code></td><td>整體答對率（盛行率低時易誤導）</td></tr>
+<tr><td>盛行率 Prevalence</td><td><code>(TP+FN) / 總數</code></td><td>族群中真有病的比例（影響 PPV/NPV）</td></tr>
+<tr><td>陽性概似比 LR+</td><td><code>Sens / (1 − Spec)</code></td><td>&gt;10 強烈支持診斷</td></tr>
+<tr><td>陰性概似比 LR−</td><td><code>(1 − Sens) / Spec</code></td><td>&lt;0.1 強烈排除診斷</td></tr>
+<tr><td>F1 分數</td><td><code>2·PPV·Sens / (PPV+Sens)</code></td><td>PPV 與敏感度的調和平均</td></tr>
+</tbody></table></div>
+
+<h4>療效/風險指標</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指標</th><th>公式</th><th>意義</th></tr></thead><tbody>
+<tr><td>相對風險 RR</td><td><code>風險(暴露) / 風險(未暴露)</code></td><td>世代研究；RR=1 無關聯</td></tr>
+<tr><td>勝算比 OR</td><td><code>(a·d) / (b·c)</code></td><td>病例對照研究；罕見病時近似 RR</td></tr>
+<tr><td>絕對風險降低 ARR</td><td><code>風險(對照) − 風險(治療)</code></td><td>絕對效益</td></tr>
+<tr><td>相對風險降低 RRR</td><td><code>ARR / 風險(對照)</code></td><td>相對效益（常被高估解讀）</td></tr>
+<tr><td>益一需治數 NNT</td><td><code>1 / ARR</code></td><td>需治療幾人才多救一人（越小越好）</td></tr>
+<tr><td>害一需治數 NNH</td><td><code>1 / ARI</code></td><td>多幾人受治才多一人受害</td></tr>
+</tbody></table></div>
+
+<h4>診斷指標的 Python 算法</h4>
+<pre><span class="label">python</span><code><span class="cmt"># 由 2x2 直接算</span>
+sens = tp / (tp + fn)
+spec = tn / (tn + fp)
+ppv  = tp / (tp + fp)
+
+<span class="cmt"># ROC / AUC（sklearn）</span>
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> roc_auc_score, roc_curve
+auc = roc_auc_score(y_true, y_score)
+fpr, tpr, thr = roc_curve(y_true, y_score)
+
+<span class="cmt"># 混淆矩陣 + 完整報告</span>
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> confusion_matrix, classification_report
+print(confusion_matrix(y_true, y_pred))
+print(classification_report(y_true, y_pred))</code></pre>
+
+<h4>統計檢定選擇（怎麼選對檢定）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>情境</th><th>檢定</th><th>Python</th></tr></thead><tbody>
+<tr><td>兩組連續、常態</td><td>獨立樣本 t 檢定</td><td><code>scipy.stats.ttest_ind</code></td></tr>
+<tr><td>同組前後、常態</td><td>配對 t 檢定</td><td><code>scipy.stats.ttest_rel</code></td></tr>
+<tr><td>兩組連續、非常態</td><td>Mann-Whitney U</td><td><code>scipy.stats.mannwhitneyu</code></td></tr>
+<tr><td>≥3 組連續、常態</td><td>單因子 ANOVA</td><td><code>scipy.stats.f_oneway</code></td></tr>
+<tr><td>兩類別變數關聯</td><td>卡方檢定</td><td><code>scipy.stats.chi2_contingency</code></td></tr>
+<tr><td>小樣本類別</td><td>Fisher 精確檢定</td><td><code>scipy.stats.fisher_exact</code></td></tr>
+<tr><td>兩連續變數相關</td><td>Pearson / Spearman</td><td><code>scipy.stats.pearsonr / spearmanr</code></td></tr>
+<tr><td>結果為二元、找預測因子</td><td>Logistic 迴歸</td><td><code>statsmodels.Logit</code></td></tr>
+<tr><td>存活/時間到事件</td><td>Kaplan-Meier / Cox</td><td><code>lifelines</code></td></tr>
+</tbody></table></div>
+
+<h4>存活分析骨架（lifelines）</h4>
+<pre><span class="label">python</span><code><span class="kw">from</span> lifelines <span class="kw">import</span> KaplanMeierFitter
+kmf = KaplanMeierFitter()
+kmf.fit(durations=T, event_observed=E)   <span class="cmt"># T=時間, E=是否發生事件</span>
+kmf.plot_survival_function()
+
+<span class="kw">from</span> lifelines.statistics <span class="kw">import</span> logrank_test
+res = logrank_test(T1, T2, E1, E2)        <span class="cmt"># 兩組比較</span>
+print(res.p_value)</code></pre>
+
+<h4>醫療資料標準與術語（縮寫對照）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>縮寫</th><th>全名 / 意義</th></tr></thead><tbody>
+<tr><td><code>DICOM</code></td><td>醫學影像與通訊標準（CT/MR/X 光等影像檔格式與傳輸）</td></tr>
+<tr><td><code>PACS</code></td><td>醫學影像儲存與傳輸系統</td></tr>
+<tr><td><code>HL7 v2</code></td><td>醫療資訊交換的老牌訊息標準（檢驗、住院通報）</td></tr>
+<tr><td><code>FHIR</code></td><td>HL7 新世代標準，用 REST API + JSON，現代互通主流</td></tr>
+<tr><td><code>EHR / EMR</code></td><td>電子健康紀錄 / 電子病歷</td></tr>
+<tr><td><code>ICD-10 / ICD-9</code></td><td>國際疾病分類碼（診斷編碼）</td></tr>
+<tr><td><code>SNOMED CT</code></td><td>系統化臨床醫學術語（最完整的臨床概念碼）</td></tr>
+<tr><td><code>LOINC</code></td><td>檢驗與臨床觀察項目的標準碼</td></tr>
+<tr><td><code>CPT</code></td><td>醫療處置/手術代碼（美國計費用）</td></tr>
+<tr><td><code>RxNorm / NDC / ATC</code></td><td>藥品標準命名 / 國家藥品碼 / 解剖治療化學分類</td></tr>
+<tr><td><code>OMOP CDM</code></td><td>共通資料模型（跨機構研究資料標準化，OHDSI）</td></tr>
+<tr><td><code>REDCap</code></td><td>臨床研究電子資料收集平台</td></tr>
+</tbody></table></div>
+
+<h4>去識別化與個資保護</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>概念</th><th>說明</th></tr></thead><tbody>
+<tr><td>個資法（台灣）</td><td>醫療屬「特種個資」，蒐集/處理/利用須符合醫療法、個資法；研究用常需 IRB 與去識別化</td></tr>
+<tr><td>HIPAA Safe Harbor</td><td>美國標準：移除 18 類識別資訊（姓名、完整日期、病歷號、地理細節等）即視為去識別</td></tr>
+<tr><td>遮罩 Masking</td><td>把識別欄替換/隱藏（如姓名→代號）</td></tr>
+<tr><td>雜湊 Hashing</td><td>用單向函數把 ID 轉成不可逆代碼（同人對應同碼，便於串接）</td></tr>
+<tr><td>日期位移 Date shifting</td><td>每位病人整體位移固定天數，保留時間間隔但隱藏真實日期</td></tr>
+<tr><td>k-匿名 (k-anonymity)</td><td>確保每筆資料至少與 k−1 筆無法區分，防止反推個人</td></tr>
+</tbody></table></div>
+<div class="box warn"><div class="t">⚠️ 處理真實病人資料的鐵則</div>
+<p>① 真實 PHI（受保護健康資訊）<strong>絕不</strong>放進公開倉庫、雲端筆記、或丟給未經授權的外部服務。<br>
+② 去識別不是改個名就好——<b>準識別欄組合</b>（生日+郵遞區號+性別）可能反推個人。<br>
+③ 研究先過 IRB；分析資料與可還原對照表<strong>分開存放</strong>。</p></div>
+</div>
+
+<!-- ===== DOCKER ===== -->
+<div class="lookup-block" id="t-docker">
+<h3>Docker 指令速查</h3>
+
+<h4>Image 映像檔</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">docker build -t name .</code></td><td>依目前目錄 Dockerfile 建 image，命名 name</td></tr>
+<tr><td><code class="g">docker images</code></td><td>列出本機所有 image</td></tr>
+<tr><td><code class="g">docker pull python:3.13</code></td><td>從 registry 下載 image</td></tr>
+<tr><td><code class="g">docker rmi name</code></td><td>刪除 image</td></tr>
+</tbody></table></div>
+
+<h4>Container 容器</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">docker run name</code></td><td>依 image 跑起一個容器</td></tr>
+<tr><td><code class="g">docker run -p 8000:8000 name</code></td><td>對應 port（主機:容器）</td></tr>
+<tr><td><code class="g">docker run -d name</code></td><td>背景執行（detached）</td></tr>
+<tr><td><code class="g">docker ps</code></td><td>列出執行中的容器</td></tr>
+<tr><td><code class="g">docker ps -a</code></td><td>含已停止的容器</td></tr>
+<tr><td><code class="g">docker stop &lt;id&gt;</code></td><td>停止容器</td></tr>
+<tr><td><code class="g">docker rm &lt;id&gt;</code></td><td>移除容器</td></tr>
+<tr><td><code class="g">docker logs &lt;id&gt;</code></td><td>看容器輸出日誌</td></tr>
+<tr><td><code class="g">docker exec -it &lt;id&gt; bash</code></td><td>進入執行中容器的 shell</td></tr>
+</tbody></table></div>
+
+<h4>多容器編排 (Compose) &amp; Dockerfile 指令</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>作用</th></tr></thead><tbody>
+<tr><td><code class="g">docker compose up -d</code></td><td>依 compose.yaml 啟動整組服務</td></tr>
+<tr><td><code class="g">docker compose down</code></td><td>停止並移除整組</td></tr>
+<tr><td><code>FROM</code></td><td>(Dockerfile) 指定基底 image</td></tr>
+<tr><td><code>WORKDIR</code></td><td>設定容器內工作目錄</td></tr>
+<tr><td><code>COPY</code></td><td>把檔案複製進 image</td></tr>
+<tr><td><code>RUN</code></td><td>build 階段執行指令（如安裝套件）</td></tr>
+<tr><td><code>CMD</code></td><td>容器啟動時執行的預設指令</td></tr>
+<tr><td><code>EXPOSE</code></td><td>宣告容器對外的 port</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== CLAUDE CODE ===== -->
+<div class="lookup-block" id="t-cc">
+<h3>Claude Code 指令速查</h3>
+<div class="box info"><div class="t">ℹ️ 說明</div><p>整理自官方文件（約 2026-06，涵蓋 v2.1.x）。版本更新指令可能異動，實際以 <code>/help</code> 為準。已知變動：<code>/vim</code> 已移至 <code>/config → Editor mode</code>。</p></div>
+
+<h4>互動模式 Slash Commands</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>/help</code></td><td>顯示所有可用命令</td></tr>
+<tr><td><code>/model [名稱]</code></td><td>切換 AI 模型（可互動選擇）</td></tr>
+<tr><td><code>/clear</code></td><td>清空對話、開始新工作（保留專案記憶）</td></tr>
+<tr><td><code>/compact [指示]</code></td><td>壓縮對話歷史以釋放上下文</td></tr>
+<tr><td><code>/context</code></td><td>視覺化目前上下文使用量</td></tr>
+<tr><td><code>/effort [low~max]</code></td><td>調整推理強度</td></tr>
+<tr><td><code>/plan</code></td><td>進入規劃模式</td></tr>
+<tr><td><code>/code-review [level] [--fix]</code></td><td>檢查 diff 的 bug／品質，可自動套修復</td></tr>
+<tr><td><code>/verify</code></td><td>實際運行 app 觀察變更效果</td></tr>
+<tr><td><code>/run</code></td><td>啟動 app 驗證變更</td></tr>
+<tr><td><code>/diff</code></td><td>開啟互動式 diff 檢視器</td></tr>
+<tr><td><code>/init</code></td><td>為專案產生 CLAUDE.md 指南</td></tr>
+<tr><td><code>/resume [session]</code></td><td>繼續先前對話（ID／名稱／選單）</td></tr>
+<tr><td><code>/config</code></td><td>開啟設定介面</td></tr>
+<tr><td><code>/usage</code></td><td>顯示成本與使用量統計</td></tr>
+<tr><td><code>/mcp</code></td><td>設定 MCP 伺服器</td></tr>
+<tr><td><code>/agents</code></td><td>管理 subagent</td></tr>
+</tbody></table></div>
+
+<h4>終端機 CLI 指令</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>指令</th><th>用途</th></tr></thead><tbody>
+<tr><td><code class="g">claude</code></td><td>啟動互動式會話</td></tr>
+<tr><td><code class="g">claude "提示"</code></td><td>帶初始提示啟動</td></tr>
+<tr><td><code class="g">claude -p "提示"</code></td><td>非互動模式（印出結果即退出）</td></tr>
+<tr><td><code class="g">cat f | claude -p "提示"</code></td><td>處理管道輸入</td></tr>
+<tr><td><code class="g">claude -c</code></td><td>繼續本目錄最近的對話</td></tr>
+<tr><td><code class="g">claude -r "session"</code></td><td>按 ID／名稱繼續會話</td></tr>
+<tr><td><code class="g">claude update</code></td><td>更新到最新版本</td></tr>
+<tr><td><code class="g">claude auth status</code></td><td>查認證狀態（回 JSON）</td></tr>
+<tr><td><code class="g">claude mcp</code></td><td>設定 MCP 伺服器</td></tr>
+</tbody></table></div>
+
+<h4>常用旗標 (flags)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>旗標</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>--model 名稱</code></td><td>指定模型（如 <code>--model claude-sonnet-4-6</code>）</td></tr>
+<tr><td><code>--permission-mode plan</code></td><td>設定權限模式</td></tr>
+<tr><td><code>--add-dir ../repo</code></td><td>加入額外可存取的工作目錄</td></tr>
+<tr><td><code>-p / --print</code></td><td>非互動印出模式</td></tr>
+<tr><td><code>-c / --continue</code></td><td>繼續最近對話</td></tr>
+<tr><td><code>--verbose</code></td><td>詳細日誌輸出</td></tr>
+</tbody></table></div>
+
+<h4>鍵盤快捷鍵</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>快捷鍵</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>Esc</code></td><td>中斷 Claude 回應（保留已完成的工作）</td></tr>
+<tr><td><code>Esc Esc</code></td><td>清空輸入草稿 / 開啟倒帶選單</td></tr>
+<tr><td><code>Shift+Tab</code></td><td>循環權限模式（default → acceptEdits → plan）</td></tr>
+<tr><td><code>Ctrl+C</code></td><td>中斷或清空輸入（連按兩次退出）</td></tr>
+<tr><td><code>Ctrl+D</code></td><td>退出會話</td></tr>
+<tr><td><code>Ctrl+L</code></td><td>重繪螢幕（修復顯示問題）</td></tr>
+<tr><td><code>Ctrl+R</code></td><td>反向搜尋命令歷史</td></tr>
+<tr><td><code>↑ / ↓</code></td><td>瀏覽命令歷史</td></tr>
+<tr><td><code>Ctrl+V / Cmd+V</code></td><td>貼上剪貼簿圖片</td></tr>
+</tbody></table></div>
+
+<h4>特殊輸入前綴 &amp; 多行</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>前綴</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>/</code></td><td>命令或 skill（如 <code>/help</code>）</td></tr>
+<tr><td><code>!</code></td><td>Shell 模式，直接執行指令（如 <code>! git status</code>）</td></tr>
+<tr><td><code>@</code></td><td>檔案路徑提及，觸發自動完成（如 <code>@ src/main.py</code>）</td></tr>
+<tr><td><code>\ + Enter</code></td><td>輸入換行（多行輸入）</td></tr>
+<tr><td><code>Ctrl+J</code></td><td>輸入換行（任何終端皆可用）</td></tr>
+</tbody></table></div>
+</div>
+
+<div style="margin-top:50px;padding-top:20px;border-top:1px dashed var(--border-dash);color:var(--text-2);font-size:13px;text-align:center">
+程式學習指南 · 暖米白主題 · 可離線使用、可列印為 PDF<br>
+觀念理解靠閱讀，記憶指令靠查表——別背，會查就好。
+</div>
+
+</main>
+</div>
+
+<button id="totop" title="回到頂端">↑</button>
+
+<script>
+(function(){
+  // ---- 行動版側欄 ----
+  var sidebar=document.getElementById('sidebar'),
+      scrim=document.getElementById('scrim'),
+      menuBtn=document.getElementById('menuBtn');
+  function closeMenu(){sidebar.classList.remove('open');scrim.classList.remove('show');}
+  menuBtn.addEventListener('click',function(){sidebar.classList.toggle('open');scrim.classList.toggle('show');});
+  scrim.addEventListener('click',closeMenu);
+
+  // ---- 側欄連結點擊：行動版自動收合 + 平滑捲動 ----
+  var navLinks=Array.prototype.slice.call(sidebar.querySelectorAll('a'));
+  navLinks.forEach(function(a){a.addEventListener('click',function(){if(window.innerWidth<=920)closeMenu();});});
+
+  // ---- 目前章節高亮（IntersectionObserver）----
+  var idToLink={};
+  navLinks.forEach(function(a){var id=a.getAttribute('href').slice(1);idToLink[id]=a;});
+  var sections=Object.keys(idToLink).map(function(id){return document.getElementById(id);}).filter(Boolean);
+  var current=null;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id=e.target.id;
+        if(current)current.classList.remove('active');
+        if(idToLink[id]){idToLink[id].classList.add('active');current=idToLink[id];}
+      }
+    });
+  },{rootMargin:'-10% 0px -80% 0px',threshold:0});
+  sections.forEach(function(s){io.observe(s);});
+
+  // ---- 回到頂端 ----
+  var totop=document.getElementById('totop');
+  window.addEventListener('scroll',function(){
+    if(window.scrollY>500)totop.classList.add('show');else totop.classList.remove('show');
+  });
+  totop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+  // ---- 查表即時搜尋過濾 ----
+  var filter=document.getElementById('filter'),
+      hint=document.getElementById('hint'),
+      noResults=document.getElementById('noResults'),
+      blocks=Array.prototype.slice.call(document.querySelectorAll('.lookup-block'));
+  // 預先快取每列文字，並附上所屬區塊(h3)與子標題(h4)，讓主題名也能搜到
+  var rows=[];
+  document.querySelectorAll('table.lookup tbody tr').forEach(function(tr){
+    var block=tr.closest('.lookup-block');
+    var h3=block?block.querySelector('h3'):null;
+    var wrap=tr.closest('.tablewrap');
+    var h4=wrap?wrap.previousElementSibling:null;
+    var ctx=(h3?h3.textContent:'')+' '+(h4&&h4.tagName==='H4'?h4.textContent:'');
+    rows.push({el:tr,text:(tr.textContent+' '+ctx).toLowerCase()});
+  });
+  function applyFilter(){
+    var q=filter.value.trim().toLowerCase();
+    var totalVisible=0;
+    rows.forEach(function(r){
+      var show=(q==='')||r.text.indexOf(q)!==-1;
+      r.el.classList.toggle('hidden',!show);
+      if(show)totalVisible++;
+    });
+    // 隱藏沒有任何可見列的整個 table 與其 block
+    blocks.forEach(function(b){
+      var anyVisible=false;
+      b.querySelectorAll('table.lookup').forEach(function(t){
+        var vis=t.querySelectorAll('tbody tr:not(.hidden)').length>0;
+        // 找到 table 對應的 wrap 與上方 h4 一起隱藏
+        var wrap=t.closest('.tablewrap');
+        var h4=wrap?wrap.previousElementSibling:null;
+        if(wrap)wrap.style.display=vis?'':'none';
+        if(h4&&h4.tagName==='H4')h4.style.display=vis?'':'none';
+        if(vis)anyVisible=true;
+      });
+      b.classList.toggle('hidden',!anyVisible);
+    });
+    if(q===''){hint.textContent='顯示全部';noResults.style.display='none';}
+    else{
+      hint.textContent='符合 '+totalVisible+' 筆';
+      noResults.style.display=totalVisible===0?'block':'none';
+    }
+  }
+  filter.addEventListener('input',applyFilter);
+  // Esc 清空
+  filter.addEventListener('keydown',function(e){if(e.key==='Escape'){filter.value='';applyFilter();}});
+})();
+</script>
+
+<script>
+/* ---- 醫療統計計算器 ---- */
+(function(){
+  var Z=1.959964; // 95% 信賴水準的 z 值
+  function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+  function pctOr(x){return isFinite(x)?(x*100).toFixed(1)+'%':'—';}
+  function fix(x,d){return isFinite(x)?x.toFixed(d==null?2:d):'—';}
+  function chip(k,v,cls,ci){return '<div class="res-chip'+(cls?' '+cls:'')+'"><span class="k">'+k+'</span><span class="v">'+v+'</span>'+(ci?'<span class="ci">'+ci+'</span>':'')+'</div>';}
+  // 比例的 Wilson score 95% CI
+  function wilson(x,n){
+    if(n<=0) return null;
+    var p=x/n, d=1+Z*Z/n;
+    var ctr=(p+Z*Z/(2*n))/d;
+    var hw=(Z/d)*Math.sqrt(p*(1-p)/n + Z*Z/(4*n*n));
+    return [Math.max(0,ctr-hw), Math.min(1,ctr+hw)];
+  }
+  function ciPct(a){return a&&isFinite(a[0])?('95% CI '+(a[0]*100).toFixed(1)+'–'+(a[1]*100).toFixed(1)+'%'):'';}
+  function ciNum(a){return a&&isFinite(a[0])&&isFinite(a[1])?('95% CI '+a[0].toFixed(2)+'–'+a[1].toFixed(2)):'';}
+
+  function calcDx(){
+    var tp=num('tp'),fp=num('fp'),fn=num('fn'),tn=num('tn');
+    var sens=tp/(tp+fn), spec=tn/(tn+fp), ppv=tp/(tp+fp), npv=tn/(tn+fn);
+    var acc=(tp+tn)/(tp+fp+fn+tn), prev=(tp+fn)/(tp+fp+fn+tn);
+    var lrp=sens/(1-spec), lrn=(1-sens)/spec, f1=2*ppv*sens/(ppv+sens);
+    var h='';
+    h+=chip('敏感度 Sensitivity',pctOr(sens),'g',ciPct(wilson(tp,tp+fn)));
+    h+=chip('特異度 Specificity',pctOr(spec),'g',ciPct(wilson(tn,tn+fp)));
+    h+=chip('陽性預測值 PPV',pctOr(ppv),'',ciPct(wilson(tp,tp+fp)));
+    h+=chip('陰性預測值 NPV',pctOr(npv),'',ciPct(wilson(tn,tn+fn)));
+    h+=chip('準確率 Accuracy',pctOr(acc),'',ciPct(wilson(tp+tn,tp+fp+fn+tn)));
+    h+=chip('盛行率 Prevalence',pctOr(prev));
+    h+=chip('概似比 LR+',fix(lrp),'a');
+    h+=chip('概似比 LR−',fix(lrn),'a');
+    h+=chip('F1 分數',fix(f1));
+    document.getElementById('dxResults').innerHTML=h;
+  }
+
+  function calcTx(){
+    var a=num('evT'),n1=num('nT'),c=num('evC'),n2=num('nC');
+    var b=n1-a, d=n2-c;
+    var rt=a/n1, rc=c/n2;
+    var rr=rt/rc;
+    var or=(a*d)/(b*c);
+    var arr=rc-rt, rrr=arr/rc, nnt=1/arr;
+    var rrCI=null, orCI=null;
+    if(a>0&&c>0){ var seR=Math.sqrt(1/a - 1/n1 + 1/c - 1/n2); rrCI=[rr*Math.exp(-Z*seR), rr*Math.exp(Z*seR)]; }
+    if(a>0&&b>0&&c>0&&d>0){ var seO=Math.sqrt(1/a+1/b+1/c+1/d); orCI=[or*Math.exp(-Z*seO), or*Math.exp(Z*seO)]; }
+    var h='';
+    h+=chip('治療組風險',pctOr(rt));
+    h+=chip('對照組風險',pctOr(rc));
+    h+=chip('相對風險 RR',fix(rr),'a',ciNum(rrCI));
+    h+=chip('勝算比 OR',fix(or),'a',ciNum(orCI));
+    h+=chip('絕對風險降低 ARR',pctOr(arr),'g');
+    h+=chip('相對風險降低 RRR',pctOr(rrr),'g');
+    h+=chip('益一需治數 NNT',fix(nnt,1),'g');
+    document.getElementById('txResults').innerHTML=h;
+  }
+
+  var paste=document.getElementById('dxPaste');
+  if(paste){
+    paste.addEventListener('input',function(){
+      var nums=this.value.split(/[\s,;]+/).map(parseFloat).filter(function(x){return !isNaN(x);});
+      if(nums.length===4){
+        document.getElementById('tp').value=nums[0];
+        document.getElementById('fp').value=nums[1];
+        document.getElementById('fn').value=nums[2];
+        document.getElementById('tn').value=nums[3];
+        calcDx();
+      }
+    });
+  }
+
+  function calcPost(){
+    var pre=num('preP')/100, lrp=num('lrPos'), lrn=num('lrNeg');
+    var preOdds=pre/(1-pre);
+    var ppO=preOdds*lrp, pnO=preOdds*lrn;
+    var pp=ppO/(1+ppO), pn=pnO/(1+pnO);
+    var h='';
+    h+=chip('檢驗前機率',pctOr(pre));
+    h+=chip('若陽性 → 檢驗後',pctOr(pp),'a');
+    h+=chip('若陰性 → 檢驗後',pctOr(pn),'g');
+    h+=chip('陽性後變化',isFinite(pp)?((pp-pre>=0?'+':'')+((pp-pre)*100).toFixed(1)+' pp'):'—');
+    h+=chip('陰性後變化',isFinite(pn)?(((pn-pre)*100).toFixed(1)+' pp'):'—');
+    document.getElementById('postResults').innerHTML=h;
+  }
+
+  ['tp','fp','fn','tn'].forEach(function(id){document.getElementById(id).addEventListener('input',calcDx);});
+  ['evT','nT','evC','nC'].forEach(function(id){document.getElementById(id).addEventListener('input',calcTx);});
+  ['preP','lrPos','lrNeg'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',calcPost);});
+  calcDx();calcTx();calcPost();
+})();
+</script>
+</body>
+</html>
