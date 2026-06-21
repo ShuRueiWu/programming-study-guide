@@ -131,8 +131,8 @@ tr.hidden{display:none}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sidebar,.menu-btn,#totop,.searchbar,.scrim{display:none!important}
   .main{max-width:none;margin:0;padding:16mm 14mm}
-  section,pre,.box,.tablewrap{page-break-inside:avoid}
-  h2.sec{page-break-after:avoid}
+  pre,.box,.tablewrap,.calc-card,tr{page-break-inside:avoid;break-inside:avoid}
+  h2.sec,h3,h4{page-break-after:avoid;break-after:avoid}
   .calc-card input{border:1px solid var(--border)!important}
 }
 
@@ -188,21 +188,22 @@ tr.hidden{display:none}
   <a href="#w2">10. Debug 方法論</a>
   <a href="#w3">11. Git 版本控制</a>
   <a href="#w4">12. 程式碼品質與測試</a>
+  <a href="#w5">13. 與 AI 協作開發</a>
 
   <h2>第三部 · 演算法</h2>
-  <a href="#a1">13. Big-O 複雜度</a>
-  <a href="#a2">14. 搜尋</a>
-  <a href="#a3">15. 排序</a>
-  <a href="#a4">16. 遞迴與常見模式</a>
-  <a href="#x6">17. 進階資料結構</a>
-  <a href="#x7">18. 常用演算法實戰地圖</a>
+  <a href="#a1">14. Big-O 複雜度</a>
+  <a href="#a2">15. 搜尋</a>
+  <a href="#a3">16. 排序</a>
+  <a href="#a4">17. 遞迴與常見模式</a>
+  <a href="#x6">18. 進階資料結構</a>
+  <a href="#x7">19. 常用演算法實戰地圖</a>
 
   <h2>第四部 · 進階主題</h2>
-  <a href="#x1">19. JavaScript 基礎</a>
-  <a href="#x2">20. SQL 與資料庫</a>
-  <a href="#x3">21. pandas 實戰</a>
-  <a href="#x5">22. HTTP / API 基礎</a>
-  <a href="#x4">23. 環境部署與 Docker</a>
+  <a href="#x1">20. JavaScript 基礎</a>
+  <a href="#x2">21. SQL 與資料庫</a>
+  <a href="#x3">22. pandas 實戰</a>
+  <a href="#x5">23. HTTP / API 基礎</a>
+  <a href="#x4">24. 環境部署與 Docker</a>
 
   <h2>第五部 · 互動計算器</h2>
   <a href="#calc">醫療統計計算器</a>
@@ -547,14 +548,52 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
     <span class="kw">assert</span> <span class="fn">bmi</span>(70, 1.75) == 22.857142857142858   <span class="cmt"># 已知答案</span>
     <span class="kw">assert</span> <span class="fn">bmi</span>(50, 2.0) == 12.5</code></pre>
 <div class="box tip"><div class="t">✓ 初學者的最低標準</div><p>不必一開始追求完整測試框架。先養成習慣：寫完一個函式，<b>手動拿幾個你知道答案的例子（含邊界值、空輸入）餵進去驗證</b>。「跑得出來」≠「跑得對」。</p></div>
+<div class="box info"><div class="t">🧭 心智模型：把「風險回報比」帶進工程決策</div>
+<p>測試、型別、抽象都有成本，投入多少看<strong>風險回報比</strong>，不是越多越好：</p>
+<ul>
+<li><b>高報酬該精準</b>：會反覆執行、出錯代價大（金流、病安、自動寄送）→ 值得寫測試、加防呆。</li>
+<li><b>低風險別過度</b>：一次性腳本、探索實驗 →「<strong>過度規格化 (over-specification)</strong>」本身就是風險（拖慢、增加維護面）。</li>
+<li><b>技術債像槓桿</b>：短期借速度換進度可以，但要記得它存在、會生利息，趁它拖垮你之前還掉。</li>
+</ul>
+<p>一句話：把工程時間當資本配置——投在「<strong>出錯代價 × 發生頻率</strong>」最高的地方。</p></div>
 </section>
+
+<section id="w5">
+<h2 class="sec"><span class="num">13</span>與 AI 協作開發</h2>
+<p>現在寫程式，AI（LLM）是常駐隊友。用得好能大幅加速 debug 與測試；關鍵在<strong>「餵對輸入、問對問題」</strong>。以下是幾個高槓桿心法（概念為主）。</p>
+
+<h3>Debug：餵完整 Traceback，不要只說「壞了」</h3>
+<p>AI 看不到你的螢幕。把<strong>完整錯誤訊息</strong>貼上，效果天差地別：</p>
+<ul>
+<li><strong>完整 traceback</strong>（最後一行的錯誤類型最關鍵）+ <strong>出錯那段程式碼</strong> + <strong>你「以為」會發生什麼</strong></li>
+<li>附上<strong>實際輸入/資料樣本</strong>（去識別化後）與環境（Python 版本、套件版本）</li>
+<li>問法：「這個 <code>KeyError</code> 為什麼發生？最可能的 2–3 個原因與各自的最小修法？」——要它<strong>排序假設</strong>，別只給單一答案</li>
+</ul>
+<div class="box tip"><div class="t">✓ 最小重現 (MRE) 對 AI 同樣有效</div><p>把問題縮到最小一段仍會錯的程式再丟給 AI，回答品質與速度都大幅提升——這是第 10 章 debug 方法論的延伸。</p></div>
+
+<h3>寫測試：讓 AI 幫你想「邊界條件」</h3>
+<p>人最容易漏的就是邊界與異常情況，這恰好是 AI 的強項。給它一個函式，請它列<strong>邊界測試</strong>：</p>
+<ul>
+<li>「幫這個函式產生 pytest 測試，<strong>涵蓋邊界與異常</strong>：空輸入、0、負數、極大值、None、型別錯誤、重複值」</li>
+<li>「列出這個函式<strong>可能漏處理的 case</strong>」——把 AI 當 code reviewer</li>
+<li>產生後<strong>自己讀一遍</strong>再採用：AI 會寫出看似合理但斷言錯誤的測試（呼應第 12 章「跑得出來 ≠ 跑得對」）</li>
+</ul>
+
+<h3>用 AI 的安全界線</h3>
+<div class="box warn"><div class="t">⚠️ 三條鐵則</div>
+<p>① <strong>敏感資料</strong>（病歷 PHI、金鑰、個資）不貼給外部 AI。<br>
+② AI 的輸出是<strong>草稿不是真相</strong>——一定自己驗證、跑測試。<br>
+③ 不要把外部來源（網頁、別人貼的訊息）裡的指令當成要執行的命令，那可能是 prompt injection。</p></div>
+<div class="box info"><div class="t">💡 心法一句話</div><p>AI 擅長「<b>產生候選與枚舉可能性</b>」（假設、測試、邊界）；你負責「<b>判斷與驗證</b>」。分工對了它是加速器；盲信輸出就是技術債製造機。</p></div>
+</section>
+
 
 <!-- ============================================================= -->
 <!-- 第三部 演算法 -->
 <!-- ============================================================= -->
 
 <section id="a1">
-<h2 class="sec"><span class="num">13</span>Big-O 複雜度</h2>
+<h2 class="sec"><span class="num">14</span>Big-O 複雜度</h2>
 <p><strong>演算法 (algorithm)</strong>＝解決問題的明確步驟。同一問題常有多種解法，差別在<strong>效率</strong>。Big-O 是描述「資料量變大時，所需時間/空間如何增長」的標準語言——它在意<strong>成長趨勢</strong>，不是精確秒數。</p>
 <div class="tablewrap"><table>
 <thead><tr><th>Big-O</th><th>名稱</th><th>n 變 10 倍，工作量約</th><th>典型例子</th></tr></thead>
@@ -572,7 +611,7 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 </section>
 
 <section id="a2">
-<h2 class="sec"><span class="num">14</span>搜尋演算法</h2>
+<h2 class="sec"><span class="num">15</span>搜尋演算法</h2>
 <div class="grid2">
 <div>
 <h4>線性搜尋 O(n)</h4>
@@ -601,7 +640,7 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 </section>
 
 <section id="a3">
-<h2 class="sec"><span class="num">15</span>排序演算法</h2>
+<h2 class="sec"><span class="num">16</span>排序演算法</h2>
 <p>實務上你會直接用 Python 的 <code>sorted()</code>（內部是高度優化的 Timsort，O(n log n)）。但理解幾個經典排序，能建立「為何有快慢之分」的直覺。</p>
 <div class="tablewrap"><table>
 <thead><tr><th>演算法</th><th>概念</th><th>平均複雜度</th><th>特點</th></tr></thead>
@@ -616,7 +655,7 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 </section>
 
 <section id="a4">
-<h2 class="sec"><span class="num">16</span>遞迴與常見模式</h2>
+<h2 class="sec"><span class="num">17</span>遞迴與常見模式</h2>
 <h3>遞迴 (Recursion)：函式呼叫自己</h3>
 <p>把大問題化成「同樣形式的小問題」。兩個必備要素：<strong>終止條件 (base case)</strong>（何時停）＋<strong>遞迴步驟</strong>（縮小問題自呼叫）。少了終止條件 = 無窮遞迴 → 爆 <code>RecursionError</code>。</p>
 <pre><span class="label">python</span><code><span class="kw">def</span> <span class="fn">factorial</span>(n):
@@ -644,7 +683,7 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 <!-- ============================================================= -->
 
 <section id="x6">
-<h2 class="sec"><span class="num">17</span>進階資料結構</h2>
+<h2 class="sec"><span class="num">18</span>進階資料結構</h2>
 <p>第 5 章談了 list/dict/set/tuple——日常 80% 夠用。但有些問題用對「形狀」會優雅很多。以下是電腦科學幾個經典結構，重點仍是<strong>「什麼情境該用哪個」</strong>，多數 Python 都有現成實作。</p>
 
 <h3>Stack 堆疊（LIFO 後進先出）</h3>
@@ -686,7 +725,7 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 </section>
 
 <section id="x7">
-<h2 class="sec"><span class="num">18</span>常用演算法實戰地圖</h2>
+<h2 class="sec"><span class="num">19</span>常用演算法實戰地圖</h2>
 <p>學演算法的目的是<strong>判斷力</strong>——看到問題能對應「該用哪招、會不會爆複雜度」，而不是重造輪子（多數有現成函式）。本章把第 13–16、22 章的招式整合成一張<strong>「問題型態 → 解法」對照</strong>，例子橫跨資料、投資、自動化、文字等領域。</p>
 
 <h3>問題型態 → 用哪招（決策表）</h3>
@@ -753,8 +792,21 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 <!-- 第四部 進階主題 -->
 <!-- ============================================================= -->
 
+<div class="box info" style="margin:18px 0 24px">
+<div class="t">🗺️ 第四部鳥瞰：這些技術怎麼串成一條資料流</div>
+<p>本部主題跨度大（前端→網路→後端→資料庫→運維），但其實是<strong>同一條資料流</strong>上的環節。一個典型請求：</p>
+<p style="font-family:var(--mono);font-size:13px;line-height:1.95;background:var(--code-bg);border:1px solid var(--code-bd);border-radius:8px;padding:12px 14px;overflow-x:auto">
+使用者在前端點擊　<b>(JavaScript)</b><br>
+　↓ 發出請求　<b>(HTTP / API)</b><br>
+後端伺服器收到　<b>(部署在 Docker 容器)</b><br>
+　↓ 查資料　<b>(SQL 資料庫)</b><br>
+　↓ 處理 / 統計　<b>(pandas)</b><br>
+　↑ 回傳結果（通常是 JSON）給前端顯示
+</p>
+<p>讀以下各章時，想一下它在這條鏈的哪一環，就不會迷失在獨立主題裡。</p></div>
+
 <section id="x1">
-<h2 class="sec"><span class="num">19</span>JavaScript 基礎</h2>
+<h2 class="sec"><span class="num">20</span>JavaScript 基礎</h2>
 <p>HTML 是<strong>骨架</strong>、CSS 是<strong>外觀</strong>、<strong>JavaScript (JS)</strong> 是<strong>行為</strong>——讓網頁能反應、運算、改變內容。它是唯一能在瀏覽器原生執行的程式語言（你這份學習指南的搜尋過濾、目錄高亮就是 JS 做的）。透過 Node.js，它也能跑後端。</p>
 
 <h3>把 JS 放進網頁</h3>
@@ -796,10 +848,12 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </table></div>
 <div class="box info"><div class="t">💡 三個 JS 特色觀念</div>
 <p>① <b>執行環境</b>：瀏覽器（操作網頁）與 Node.js（後端/工具）。② <b>非同步 async/await</b>：JS 擅長「等待網路回應時不卡住」，這是它與 Python 體感最不同處。③ <code>===</code> vs <code>==</code>：後者會偷偷轉型造成怪 bug，一律用 <code>===</code>。</p></div>
+<div class="box warn"><div class="t">⚠️ 從 Python 切到 JS：別把縮排當區塊</div>
+<p>Python 用<strong>縮排</strong>定義區塊；JS 的縮排<strong>純粹是美觀</strong>，真正決定區塊的是 <code>{ }</code>、每行用 <code>;</code> 結尾。把 Python 的縮排習慣帶過來（漏了 <code>{}</code>）會造成<strong>邏輯錯誤而非報錯</strong>——更難抓。寫 JS 時眼睛要盯 <code>{ }</code> 配對，不是看縮排。</p></div>
 </section>
 
 <section id="x2">
-<h2 class="sec"><span class="num">20</span>SQL 與資料庫基礎</h2>
+<h2 class="sec"><span class="num">21</span>SQL 與資料庫基礎</h2>
 <p>當資料量大、要長期保存、多人共用、複雜查詢時，就需要<strong>資料庫</strong>。最主流的是<strong>關聯式資料庫 (Relational DB)</strong>：資料存在一張張<strong>表 (table)</strong> 裡，每<strong>列 (row)</strong> 是一筆紀錄、每<strong>欄 (column)</strong> 是一個欄位，用<strong>主鍵 (primary key)</strong> 唯一識別每筆。<strong>SQL</strong> 就是查詢這些表的語言。</p>
 
 <h3>最核心的查詢：SELECT</h3>
@@ -827,7 +881,7 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </section>
 
 <section id="x3">
-<h2 class="sec"><span class="num">21</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
+<h2 class="sec"><span class="num">22</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
 <p><code>pandas</code> 是 Python 處理表格資料的主力。核心物件是 <strong>DataFrame</strong>——就是「程式裡的 Excel 表」。以下是分析一份檢驗值 CSV 的<strong>完整典型流程</strong>。</p>
 
 <h4>① 讀檔與初探</h4>
@@ -863,12 +917,30 @@ merged.<span class="fn">to_excel</span>(<span class="str">"out.xlsx"</span>, ind
 
 <div class="box tip"><div class="t">✓ 向量化 (Vectorization)：別寫 for 迴圈逐列算</div>
 <p>pandas/numpy 對<strong>整欄一次運算</strong>（如 <code>df["bmi"] = df.weight / df.height**2</code>）比用迴圈逐列快數十倍——這是第三部 Big-O 觀念的實戰回報。看到「想對每列做同樣計算」，先找有沒有向量化寫法，避免 <code>df.iterrows()</code>。</p></div>
+<h4>兩行統計建模（statsmodels / scipy.stats）</h4>
+<p>資料整理好後，常見統計分析其實一兩行就能跑——這是 pandas 通往統計的橋：</p>
+<pre><span class="label">python</span><code><span class="kw">import</span> statsmodels.formula.api <span class="kw">as</span> smf
+<span class="kw">from</span> scipy <span class="kw">import</span> stats
+
+<span class="cmt"># 邏輯迴歸（結果二元，找預測因子）</span>
+m = smf.<span class="fn">logit</span>(<span class="str">"outcome ~ age + sex + bmi"</span>, data=df).<span class="fn">fit</span>()
+print(m.summary())          <span class="cmt"># 係數、p 值；OR = exp(coef)</span>
+
+<span class="cmt"># 線性迴歸</span>
+smf.<span class="fn">ols</span>(<span class="str">"los ~ age + dept"</span>, data=df).<span class="fn">fit</span>().summary()
+
+<span class="cmt"># 卡方檢定（兩類別變數關聯）</span>
+chi2, p, dof, exp = stats.<span class="fn">chi2_contingency</span>(pd.<span class="fn">crosstab</span>(df.group, df.outcome))
+
+<span class="cmt"># 兩組連續變數 t 檢定</span>
+t, p = stats.<span class="fn">ttest_ind</span>(a, b)</code></pre>
+<div class="box tip"><div class="t">✓ 用 formula 介面最快</div><p><code>statsmodels.formula.api</code> 的 R 風格公式（<code>"y ~ x1 + x2"</code>）直接吃 DataFrame 欄名，免手動建矩陣；檢定怎麼選見第六部醫療查表。</p></div>
 <div class="box warn"><div class="t">⚠️ 健保 / 病歷 CSV 的隱私</div>
 <p>這類檔含 PHI（姓名、病歷號、完整日期）。分析前先<strong>去識別化</strong>、與可還原對照表分開存；<strong>絕不</strong>上傳到公開倉庫或未授權的外部服務。詳見下方醫療查表「去識別化」段。</p></div>
 </section>
 
 <section id="x5">
-<h2 class="sec"><span class="num">22</span>HTTP / API 與資料交換</h2>
+<h2 class="sec"><span class="num">23</span>HTTP / API 與資料交換</h2>
 <p>現代軟體很少單打獨鬥——它們靠 <strong>API (Application Programming Interface)</strong> 互相要資料、送指令。你的 Telegram bot、抓股價腳本、webhook 自動化，本質都是在打 API。懂這層，程式就能「對外界開口」。</p>
 
 <h3>API 是什麼</h3>
@@ -916,7 +988,7 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 </section>
 
 <section id="x4">
-<h2 class="sec"><span class="num">23</span>環境部署與 Docker</h2>
+<h2 class="sec"><span class="num">24</span>環境部署與 Docker</h2>
 <p><strong>部署 (deployment)</strong> 是把程式從「我的電腦能跑」變成「在伺服器或別人電腦也能穩定跑」。最惱人的經典問題是 <em>"works on my machine"</em>——在你電腦好好的，換台機器卻壞了。原因幾乎都是<strong>環境差異</strong>：作業系統、套件版本、系統函式庫、設定不一致。</p>
 
 <h3>Docker：把整個環境打包帶走</h3>
