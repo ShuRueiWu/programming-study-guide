@@ -197,13 +197,15 @@ tr.hidden{display:none}
   <a href="#a4">17. 遞迴與常見模式</a>
   <a href="#x6">18. 進階資料結構</a>
   <a href="#x7">19. 常用演算法實戰地圖</a>
+  <a href="#y1">20. 取樣、數值與最佳化</a>
+  <a href="#y2">21. 機器學習演算法選型</a>
 
   <h2>第四部 · 進階主題</h2>
-  <a href="#x1">20. JavaScript 基礎</a>
-  <a href="#x2">21. SQL 與資料庫</a>
-  <a href="#x3">22. pandas 實戰</a>
-  <a href="#x5">23. HTTP / API 基礎</a>
-  <a href="#x4">24. 環境部署與 Docker</a>
+  <a href="#x1">22. JavaScript 基礎</a>
+  <a href="#x2">23. SQL 與資料庫</a>
+  <a href="#x3">24. pandas 實戰</a>
+  <a href="#x5">25. HTTP / API 基礎</a>
+  <a href="#x4">26. 環境部署與 Docker</a>
 
   <h2>第五部 · 互動計算器</h2>
   <a href="#calc">醫療統計計算器</a>
@@ -788,6 +790,79 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 <div class="box tip"><div class="t">✓ 一句總結</div><p>演算法學「<strong>判斷該用哪招、會不會爆複雜度</strong>」；實作優先找現成函式（<code>bisect</code>／<code>heapq</code>／<code>functools</code>／<code>rapidfuzz</code>／<code>sklearn</code>）。手刻只在學習與面試時做。</p></div>
 </section>
 
+<section id="y1">
+<h2 class="sec"><span class="num">20</span>取樣、數值與最佳化</h2>
+<p>幾個第 14–19 章沒涵蓋、但實務（尤其資料 / 研究 / 模擬）常用的經典演算法，概念為主。</p>
+
+<h3>取樣與模擬（做研究 / 風險評估會用）</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>技巧</th><th>一句概念</th><th>用途 / Python</th></tr></thead>
+<tbody>
+<tr><td>洗牌 Fisher-Yates</td><td>原地隨機重排，每種排列等機率</td><td>隨機分組；<code>random.shuffle</code></td></tr>
+<tr><td>加權抽樣</td><td>依權重抽，不是均等</td><td>不平衡抽樣；<code>random.choices(weights=)</code></td></tr>
+<tr><td>蓄水池抽樣 Reservoir</td><td>資料流 / 超大檔只掃一遍抽 k 筆</td><td>抽樣大型 log / DB</td></tr>
+<tr><td><b>Bootstrap</b></td><td>對樣本「重抽放回」幾千次，看統計量分布</td><td>難算公式時估 CI；<code>scipy.stats.bootstrap</code></td></tr>
+<tr><td><b>Monte Carlo</b></td><td>用大量隨機模擬逼近答案 / 機率</td><td>風險 / 情境模擬、積分估計</td></tr>
+</tbody>
+</table></div>
+<div class="box med"><div class="t">🩺 為什麼對你特別有用</div><p class="analogy">當某統計量沒有現成 CI 公式（中位數差、AUC 差、複雜衍生指標），<b>Bootstrap</b> 幾行就能給你信賴區間；<b>Monte Carlo</b> 則能模擬「某策略在不確定參數下的結果分布」。</p></div>
+
+<h3>數學與數值經典</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>演算法</th><th>概念</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>輾轉相除 (Euclid)</td><td>求最大公因數 GCD</td><td>約分、週期；<code>math.gcd</code></td></tr>
+<tr><td>質數篩 (Eratosthenes)</td><td>一次篩出範圍內所有質數</td><td>數論、雜湊設計</td></tr>
+<tr><td>快速冪</td><td>O(log n) 算 a 的 n 次方</td><td>大數冪、模運算</td></tr>
+<tr><td><b>二分答案</b></td><td>對「答案範圍」二分，不是對陣列</td><td>「最小可行值」最佳化</td></tr>
+<tr><td>牛頓法</td><td>用切線快速逼近方程式的根</td><td>求根、最佳化內核</td></tr>
+</tbody>
+</table></div>
+<div class="box info"><div class="t">💡 二分答案：最被低估的技巧</div><p>二分搜尋不只用在「已排序陣列找值」。當答案有單調性（某門檻以上都可行、以下都不可行），就能<strong>對答案空間二分</strong>，把「試所有可能」從 O(n) 降到 O(log n)。例：「要讓每人都分到 ≥X，最大的 X 是多少」。</p></div>
+
+<h3>回溯 Backtracking</h3>
+<p>系統化窮舉所有可能，走不通就<strong>退回上一步換條路</strong>（DFS + 剪枝）。用於排列組合、數獨、排班、N 皇后這類「滿足一堆限制」的問題。Python 的 <code>itertools.permutations / combinations</code> 已涵蓋多數簡單情況。</p>
+
+<h3>最佳化直覺：梯度下降 (Gradient Descent)</h3>
+<p>幾乎所有機器學習「學習」的引擎。想像在山谷找最低點：每步往<strong>最陡下坡方向</strong>走一小步，反覆逼近谷底（最小誤差）。<strong>學習率</strong>＝步伐大小：太大會跳過、太小會很慢。你不必手刻（框架內建），但懂這直覺，調 ML 模型才不會瞎調。</p>
+<div class="box tip"><div class="t">✓ 重點</div><p>這些一樣<strong>多有現成實作</strong>（<code>math</code>／<code>random</code>／<code>scipy.optimize</code>／<code>scipy.stats.bootstrap</code>）。價值在「知道有這招、何時該用」——其中 <b>Bootstrap、Monte Carlo、二分答案</b> 最常在實務派上用場。</p></div>
+</section>
+
+<section id="y2">
+<h2 class="sec"><span class="num">21</span>機器學習演算法選型地圖</h2>
+<p>第 19 章列了應用演算法，這章把「<strong>遇到什麼問題 → 選哪個 ML 演算法</strong>」攤成決策地圖。不必懂內部數學，重點是<strong>對應問題類型</strong>並用 <code>scikit-learn</code> 跑起來。</p>
+
+<h3>第一步：先分清楚問題類型</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>你有什麼 / 想要什麼</th><th>問題類型</th></tr></thead>
+<tbody>
+<tr><td>有標準答案(標籤)，要預測<b>類別</b></td><td>監督式 · 分類 Classification</td></tr>
+<tr><td>有標準答案，要預測<b>數值</b></td><td>監督式 · 迴歸 Regression</td></tr>
+<tr><td>沒有標籤，想找<b>自然分群</b></td><td>非監督 · 分群 Clustering</td></tr>
+<tr><td>想<b>壓縮維度 / 視覺化</b></td><td>非監督 · 降維</td></tr>
+<tr><td>想找<b>異常點</b></td><td>異常偵測 Anomaly</td></tr>
+</tbody>
+</table></div>
+
+<h3>第二步：選演算法</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>問題</th><th>先試（簡單可解釋）</th><th>要更強時</th><th>sklearn</th></tr></thead>
+<tbody>
+<tr><td>分類</td><td>邏輯迴歸、決策樹</td><td>隨機森林、梯度提升 (XGBoost)</td><td><code>LogisticRegression</code> / <code>RandomForestClassifier</code></td></tr>
+<tr><td>迴歸</td><td>線性迴歸</td><td>隨機森林、梯度提升迴歸</td><td><code>LinearRegression</code> / <code>GradientBoostingRegressor</code></td></tr>
+<tr><td>分群</td><td>k-means（需先設群數）</td><td>階層分群、DBSCAN（自動找群數 / 抗噪）</td><td><code>KMeans</code> / <code>DBSCAN</code></td></tr>
+<tr><td>降維</td><td>PCA</td><td>UMAP / t-SNE（視覺化）</td><td><code>PCA</code></td></tr>
+<tr><td>異常偵測</td><td>統計門檻 (z-score)</td><td>Isolation Forest</td><td><code>IsolationForest</code></td></tr>
+</tbody>
+</table></div>
+
+<h3>第三步：別忘了的鐵則</h3>
+<div class="box warn"><div class="t">⚠️ ML 三個最常見的坑</div>
+<p>① <strong>切分訓練 / 測試集</strong>，用沒見過的資料評估，否則高分是假的（過擬合 overfitting）。② <strong>類別不平衡</strong>（如罕病 1%）時 accuracy 會騙人，要看 AUC / 召回率（呼應診斷指標）。③ <strong>資料外洩 (leakage)</strong>：別把「結果才知道的資訊」當特徵。</p></div>
+<div class="box tip"><div class="t">✓ 起手式</div><p>先用<strong>簡單可解釋</strong>的模型（邏輯迴歸 / 決策樹）建 baseline，再考慮複雜模型。可解釋性對醫療尤其重要——能說清楚「為什麼這樣預測」往往比多幾趴準確率更有價值。標準流程：<code>train_test_split → fit → predict → 評估(AUC / 混淆矩陣)</code>。</p></div>
+</section>
+
+
 <!-- ============================================================= -->
 <!-- 第四部 進階主題 -->
 <!-- ============================================================= -->
@@ -806,7 +881,7 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 <p>讀以下各章時，想一下它在這條鏈的哪一環，就不會迷失在獨立主題裡。</p></div>
 
 <section id="x1">
-<h2 class="sec"><span class="num">20</span>JavaScript 基礎</h2>
+<h2 class="sec"><span class="num">22</span>JavaScript 基礎</h2>
 <p>HTML 是<strong>骨架</strong>、CSS 是<strong>外觀</strong>、<strong>JavaScript (JS)</strong> 是<strong>行為</strong>——讓網頁能反應、運算、改變內容。它是唯一能在瀏覽器原生執行的程式語言（你這份學習指南的搜尋過濾、目錄高亮就是 JS 做的）。透過 Node.js，它也能跑後端。</p>
 
 <h3>把 JS 放進網頁</h3>
@@ -853,7 +928,7 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </section>
 
 <section id="x2">
-<h2 class="sec"><span class="num">21</span>SQL 與資料庫基礎</h2>
+<h2 class="sec"><span class="num">23</span>SQL 與資料庫基礎</h2>
 <p>當資料量大、要長期保存、多人共用、複雜查詢時，就需要<strong>資料庫</strong>。最主流的是<strong>關聯式資料庫 (Relational DB)</strong>：資料存在一張張<strong>表 (table)</strong> 裡，每<strong>列 (row)</strong> 是一筆紀錄、每<strong>欄 (column)</strong> 是一個欄位，用<strong>主鍵 (primary key)</strong> 唯一識別每筆。<strong>SQL</strong> 就是查詢這些表的語言。</p>
 
 <h3>最核心的查詢：SELECT</h3>
@@ -881,7 +956,7 @@ btn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (
 </section>
 
 <section id="x3">
-<h2 class="sec"><span class="num">22</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
+<h2 class="sec"><span class="num">24</span>pandas 實戰：讀檢驗 / 健保 CSV 全流程</h2>
 <p><code>pandas</code> 是 Python 處理表格資料的主力。核心物件是 <strong>DataFrame</strong>——就是「程式裡的 Excel 表」。以下是分析一份檢驗值 CSV 的<strong>完整典型流程</strong>。</p>
 
 <h4>① 讀檔與初探</h4>
@@ -940,7 +1015,7 @@ t, p = stats.<span class="fn">ttest_ind</span>(a, b)</code></pre>
 </section>
 
 <section id="x5">
-<h2 class="sec"><span class="num">23</span>HTTP / API 與資料交換</h2>
+<h2 class="sec"><span class="num">25</span>HTTP / API 與資料交換</h2>
 <p>現代軟體很少單打獨鬥——它們靠 <strong>API (Application Programming Interface)</strong> 互相要資料、送指令。你的 Telegram bot、抓股價腳本、webhook 自動化，本質都是在打 API。懂這層，程式就能「對外界開口」。</p>
 
 <h3>API 是什麼</h3>
@@ -988,7 +1063,7 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 </section>
 
 <section id="x4">
-<h2 class="sec"><span class="num">24</span>環境部署與 Docker</h2>
+<h2 class="sec"><span class="num">26</span>環境部署與 Docker</h2>
 <p><strong>部署 (deployment)</strong> 是把程式從「我的電腦能跑」變成「在伺服器或別人電腦也能穩定跑」。最惱人的經典問題是 <em>"works on my machine"</em>——在你電腦好好的，換台機器卻壞了。原因幾乎都是<strong>環境差異</strong>：作業系統、套件版本、系統函式庫、設定不一致。</p>
 
 <h3>Docker：把整個環境打包帶走</h3>
@@ -1515,6 +1590,9 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 <tr><td><code>statsmodels</code></td><td>統計建模、時間序列 (tsa)</td></tr>
 <tr><td><code>networkx</code></td><td>圖：最短路徑、連通、拓撲排序</td></tr>
 <tr><td><code>numpy</code></td><td>向量化數值運算（演算法加速基礎）</td></tr>
+<tr><td><code>random / secrets</code></td><td>洗牌、抽樣（secrets 用於安全亂數）</td></tr>
+<tr><td><code>scipy.optimize / scipy.stats</code></td><td>數值最佳化、求根、bootstrap CI</td></tr>
+<tr><td><code>xgboost / lightgbm</code></td><td>梯度提升（表格資料常勝軍）</td></tr>
 </tbody></table></div>
 </div>
 
