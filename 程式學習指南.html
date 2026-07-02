@@ -233,7 +233,7 @@ tr.hidden{display:none}
 <!-- ======================= MAIN ======================= -->
 <main class="main">
   <h1 class="page">程式學習指南</h1>
-  <p class="subtitle">給聰明的初學者：左半把<strong>為什麼</strong>講透（觀念、流程、演算法），右半把<strong>怎麼查</strong>列清（HTML / CSS / Python / 醫療速查表）。技術名詞保留英文，方便對照原文資料。</p>
+  <p class="subtitle">給聰明的初學者：前四部把<strong>為什麼</strong>講透（觀念 → 流程心法 → 演算法 → 進階主題），第五部<strong>動手算</strong>（互動統計計算器），第六部<strong>怎麼查</strong>（HTML / CSS / Python / JS / SQL / Shell / 醫療等 17 張速查表）。技術名詞保留英文，方便對照原文資料。</p>
 
   <div class="toc-top">
     <strong style="color:var(--amber)">如何使用這份文件</strong>
@@ -531,7 +531,7 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 </tbody>
 </table></div>
 <div class="box info"><div class="t">💡 為什麼非學不可</div>
-<p>沒有 Git：你會有 <code>報告_final.py</code>、<code>報告_final_真的final.py</code>、<code>報告_最新版2.py</code>。有 Git：一條乾淨的歷史，隨時可回溯「上週能跑、今天壞了」中間到底改了什麼。日常基本流程只有三個動作：<code class="g">git add</code>（選要存的）→ <code class="g">git commit</code>（存檔+說明）→ <code class="g">git push</code>（上傳）。完整指令見第四部查表。</p></div>
+<p>沒有 Git：你會有 <code>報告_final.py</code>、<code>報告_final_真的final.py</code>、<code>報告_最新版2.py</code>。有 Git：一條乾淨的歷史，隨時可回溯「上週能跑、今天壞了」中間到底改了什麼。日常基本流程只有三個動作：<code class="g">git add</code>（選要存的）→ <code class="g">git commit</code>（存檔+說明）→ <code class="g">git push</code>（上傳）。完整指令見<a class="inline" href="#t-py">第六部查表</a>。</p></div>
 </section>
 
 <section id="w4">
@@ -728,7 +728,7 @@ first = q.popleft()  <span class="cmt"># 出隊（頭端）= "P1"</span></code><
 
 <section id="x7">
 <h2 class="sec"><span class="num">19</span>常用演算法實戰地圖</h2>
-<p>學演算法的目的是<strong>判斷力</strong>——看到問題能對應「該用哪招、會不會爆複雜度」，而不是重造輪子（多數有現成函式）。本章把第 13–16、22 章的招式整合成一張<strong>「問題型態 → 解法」對照</strong>，例子橫跨資料、投資、自動化、文字等領域。</p>
+<p>學演算法的目的是<strong>判斷力</strong>——看到問題能對應「該用哪招、會不會爆複雜度」，而不是重造輪子（多數有現成函式）。本章把前面幾章（Big-O、搜尋、排序、遞迴、進階資料結構）的招式整合成一張<strong>「問題型態 → 解法」對照</strong>，例子橫跨資料、投資、自動化、文字等領域。</p>
 
 <h3>問題型態 → 用哪招（決策表）</h3>
 <div class="tablewrap"><table>
@@ -1101,7 +1101,7 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 <!-- 第五部 互動計算器 -->
 <!-- ============================================================= -->
 <h2 class="sec" id="calc" style="margin-top:56px"><span class="num">🧮</span>第五部 · 醫療統計計算器</h2>
-<p class="lead">即時試算（改數字立刻重算）。這也是第 17 章 JS／DOM 概念的活範例——本頁就用同樣手法做的。</p>
+<p class="lead">即時試算（改數字立刻重算）。這也是 JavaScript 章（DOM／事件）概念的活範例——本頁就用同樣手法做的。</p>
 
 <div class="calc">
 <div class="calc-card">
