@@ -206,6 +206,9 @@ tr.hidden{display:none}
   <a href="#x3">24. pandas 實戰</a>
   <a href="#x5">25. HTTP / API 基礎</a>
   <a href="#x4">26. 環境部署與 Docker</a>
+  <a href="#y3">27. 並行與非同步</a>
+  <a href="#y4">28. 從腳本到可靠工具</a>
+  <a href="#y5">29. 實務陷阱：編碼/時區/浮點</a>
 
   <h2>第五部 · 互動計算器</h2>
   <a href="#calc">醫療統計計算器</a>
@@ -225,6 +228,8 @@ tr.hidden{display:none}
   <a href="#t-json">JSON / YAML</a>
   <a href="#t-md">Markdown 語法</a>
   <a href="#t-shell">Shell 終端機指令</a>
+  <a href="#t-ops">並行 · CLI · Logging</a>
+  <a href="#t-traps">編碼 · 時區 · 數值</a>
   <a href="#t-med">醫療資料 · 統計 · 標準</a>
   <a href="#t-docker">Docker 指令</a>
   <a href="#t-cc">Claude Code 指令</a>
@@ -233,7 +238,7 @@ tr.hidden{display:none}
 <!-- ======================= MAIN ======================= -->
 <main class="main">
   <h1 class="page">程式學習指南</h1>
-  <p class="subtitle">給聰明的初學者：前四部把<strong>為什麼</strong>講透（觀念 → 流程心法 → 演算法 → 進階主題），第五部<strong>動手算</strong>（互動統計計算器），第六部<strong>怎麼查</strong>（HTML / CSS / Python / JS / SQL / Shell / 醫療等 17 張速查表）。技術名詞保留英文，方便對照原文資料。</p>
+  <p class="subtitle">給聰明的初學者：前四部把<strong>為什麼</strong>講透（觀念 → 流程心法 → 演算法 → 進階主題），第五部<strong>動手算</strong>（互動統計計算器），第六部<strong>怎麼查</strong>（HTML / CSS / Python / JS / SQL / Regex / Shell / 醫療等速查表）。技術名詞保留英文，方便對照原文資料。</p>
 
   <div class="toc-top">
     <strong style="color:var(--amber)">如何使用這份文件</strong>
@@ -610,6 +615,29 @@ deactivate                     <span class="cmt"># 離開</span></code></pre>
 </table></div>
 <div class="box info"><div class="t">💡 為什麼初學者也要懂</div>
 <p>資料少時什麼寫法都快，差異看不出來。但資料一大，<code>O(n²)</code> 和 <code>O(n)</code> 可能是「跑 3 小時 vs 3 秒」。最常見的實戰陷阱：<strong>在迴圈裡用 <code>list</code> 的 <code>in</code> 去比對</strong>（變 O(n²)）——改用 <code>set</code>/<code>dict</code> 即降為 O(n)。這是第 5 章「資料結構選型」直接的回報。</p></div>
+
+<h3>別猜哪裡慢——量它 (Profiling)</h3>
+<p>Big-O 給你<strong>理論</strong>直覺，但實際瓶頸常在意想不到的地方。<strong>優化前先量測</strong>，否則你會花力氣優化根本不慢的部分。</p>
+<pre><span class="label">python</span><code><span class="cmt"># 1. 量一小段程式碼的耗時</span>
+<span class="kw">import</span> timeit
+timeit.<span class="fn">timeit</span>(<span class="str">"x in mylist"</span>, globals=globals(), number=1000)
+
+<span class="cmt"># 2. 找出整支程式哪個函式最花時間</span>
+<span class="kw">import</span> cProfile
+cProfile.<span class="fn">run</span>(<span class="str">"main()"</span>, sort=<span class="str">"cumtime"</span>)   <span class="cmt"># 依累計時間排序</span>
+
+<span class="cmt"># 3. 最土砲但很有效</span>
+<span class="kw">import</span> time
+t0 = time.<span class="fn">perf_counter</span>()
+do_something()
+print(<span class="str">f"耗時 {time.perf_counter()-t0:.2f}s"</span>)</code></pre>
+<div class="box info"><div class="t">💡 先分清楚：卡在 CPU 還是 IO？</div>
+<p>這決定你該用哪種優化，也是下一章「並行」選型的前提：</p>
+<ul>
+<li><strong>CPU-bound</strong>（算很久）：大量計算、影像處理 → 優化演算法、向量化 (numpy)、多行程 (multiprocessing)。</li>
+<li><strong>IO-bound</strong>（等很久）：等 API 回應、讀寫檔案、查資料庫 → CPU 其實在發呆，優化演算法沒用，該用<strong>並行等待</strong>（asyncio / threading）或減少往返次數。</li>
+</ul></div>
+<div class="box tip"><div class="t">✓ 優化三步驟</div><p><strong>① 先能跑對 → ② 量測找瓶頸 → ③ 只優化那一處</strong>。過早優化會讓程式又醜又難改，卻沒變快（這是工程上最常見的浪費）。</p></div>
 </section>
 
 <section id="a2">
@@ -1096,6 +1124,185 @@ data = r.<span class="fn">json</span>()        <span class="cmt"># 把回傳的 
 
 
 
+
+<section id="y3">
+<h2 class="sec"><span class="num">27</span>並行與非同步</h2>
+<p>預設情況下程式<strong>一次做一件事</strong>：打 10 個 API 就等 10 次。<strong>並行 (concurrency)</strong> 讓等待時間重疊，總時間從「相加」變成「差不多等於最慢的那個」。關鍵是先分清楚你的瓶頸型態（上承第 14 章）。</p>
+
+<h3>三種做法怎麼選</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>做法</th><th>適合</th><th>原理</th><th>Python</th></tr></thead>
+<tbody>
+<tr><td><strong>threading 執行緒</strong></td><td><b>IO-bound</b>：打 API、下載、讀檔</td><td>等待時切換去做別的事</td><td><code>ThreadPoolExecutor</code></td></tr>
+<tr><td><strong>asyncio 非同步</strong></td><td><b>IO-bound 且量很大</b>：上千請求、長連線 bot</td><td>單執行緒協作式切換，開銷最小</td><td><code>async / await</code></td></tr>
+<tr><td><strong>multiprocessing 多行程</strong></td><td><b>CPU-bound</b>：大量計算、影像</td><td>開多個行程用滿多核心</td><td><code>ProcessPoolExecutor</code></td></tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="t">💡 為什麼 CPU 密集不能用 threading？GIL</div>
+<p>CPython 有 <strong>GIL (Global Interpreter Lock)</strong>：同一時間只有一個執行緒能執行 Python bytecode。所以多執行緒<strong>不會</strong>讓純計算變快（只是輪流用同一顆核心），但<strong>等待 IO 時會釋放 GIL</strong>——這正是 threading 對 IO-bound 有效、對 CPU-bound 無效的原因。要吃滿多核心，得用 multiprocessing（各自獨立的直譯器）。</p></div>
+
+<h3>最實用的一招：並行打 API</h3>
+<pre><span class="label">python</span><code><span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor
+
+<span class="kw">def</span> <span class="fn">fetch</span>(url):
+    <span class="kw">return</span> requests.<span class="fn">get</span>(url, timeout=10).<span class="fn">json</span>()
+
+<span class="cmt"># 8 條線同時跑；原本 30 個請求 × 1 秒 = 30 秒 → 約 4 秒</span>
+<span class="kw">with</span> <span class="fn">ThreadPoolExecutor</span>(max_workers=8) <span class="kw">as</span> pool:
+    results = list(pool.<span class="fn">map</span>(fetch, urls))</code></pre>
+<p>這是 CP 值最高的並行寫法：<strong>三行、不用改架構</strong>，就能把「一堆獨立的網路請求」加速數倍。</p>
+
+<h3>asyncio：概念先懂</h3>
+<pre><span class="label">python</span><code><span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">work</span>(n):
+    <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(1)    <span class="cmt"># await = 「我要等了，你先去做別的」</span>
+    <span class="kw">return</span> n
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="cmt"># 三個一起跑，總共約 1 秒而不是 3 秒</span>
+    <span class="kw">return</span> <span class="kw">await</span> asyncio.<span class="fn">gather</span>(<span class="fn">work</span>(1), <span class="fn">work</span>(2), <span class="fn">work</span>(3))
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())</code></pre>
+<p><code>await</code> 的意思是「這裡要等，把控制權交回去讓別的任務跑」。整條鏈都要是 <code>async</code> 才有效——這是 asyncio 最惱人之處（<em>function colouring</em>：一個地方用了 async，呼叫它的人也得 async）。</p>
+
+<h3>並行帶來的三個新問題</h3>
+<div class="box warn"><div class="t">⚠️ 沒有並行就不會遇到的坑</div>
+<p>① <strong>競爭條件 (race condition)</strong>：兩條線同時改同一份資料 → 結果不可預測。解法：用 <code>Lock</code>，或更好的——讓每條線<strong>只回傳結果、不共用可變狀態</strong>（上面 <code>pool.map</code> 就是這種安全寫法）。<br>
+② <strong>限流 (rate limit)</strong>：並行太猛會被對方擋（HTTP 429）。控制 <code>max_workers</code>、加重試與退避 (backoff)。<br>
+③ <strong>難 debug</strong>：錯誤發生順序不固定、traceback 可能被吞掉。<strong>先寫對序列版本，確定邏輯正確再並行化。</strong></p></div>
+<div class="box tip"><div class="t">✓ 決策一句話</div><p><strong>等很久 → threading（少量）或 asyncio（大量）；算很久 → multiprocessing。</strong> 不確定時先量測（第 14 章）。九成的個人腳本，一個 <code>ThreadPoolExecutor</code> 就夠了。</p></div>
+</section>
+
+<section id="y4">
+<h2 class="sec"><span class="num">28</span>從腳本到可靠工具</h2>
+<p>「能跑的腳本」和「可以放心排程、半年後還敢改的工具」差距很大，差別不在演算法，而在幾個工程習慣。這章是把你寫的小腳本升級成<strong>可信賴系統</strong>的清單。</p>
+
+<h3>① 參數化：用 argparse，不要改程式碼</h3>
+<p>把「每次要改的東西」變成命令列參數，程式碼就不必為了跑不同情境而被反覆編輯。</p>
+<pre><span class="label">python</span><code><span class="kw">import</span> argparse
+ap = argparse.<span class="fn">ArgumentParser</span>(description=<span class="str">"匯出報表"</span>)
+ap.<span class="fn">add_argument</span>(<span class="str">"input"</span>)                              <span class="cmt"># 必填位置參數</span>
+ap.<span class="fn">add_argument</span>(<span class="str">"--out"</span>, default=<span class="str">"out.csv"</span>)           <span class="cmt"># 選填，有預設</span>
+ap.<span class="fn">add_argument</span>(<span class="str">"--apply"</span>, action=<span class="str">"store_true"</span>,
+                help=<span class="str">"真的寫入；預設只做 dry-run"</span>)
+args = ap.<span class="fn">parse_args</span>()
+
+<span class="kw">if</span> <span class="kw">not</span> args.apply:
+    print(<span class="str">"[DRY-RUN] 以下動作不會真的執行："</span>)</code></pre>
+<div class="box tip"><div class="t">✓ 破壞性操作：dry-run 應該是<strong>預設</strong></div>
+<p>會刪檔、覆寫資料、寄信、改設定的工具，預設只<strong>印出「將要做什麼」</strong>，明確加 <code>--apply</code> 才真的執行。這個習慣能擋掉絕大多數「手滑毀資料」的意外——成本只有幾行程式碼。</p></div>
+
+<h3>② 記錄：用 logging 取代 print</h3>
+<p>排程跑的程式沒人在看畫面，出事時<strong>只剩 log 能查</strong>。<code>logging</code> 比 <code>print</code> 多了三件關鍵的事：時間戳、嚴重等級、可分流到檔案。</p>
+<pre><span class="label">python</span><code><span class="kw">import</span> logging
+logging.<span class="fn">basicConfig</span>(
+    level=logging.INFO,
+    format=<span class="str">"%(asctime)s %(levelname)s %(message)s"</span>,
+    filename=<span class="str">"run.log"</span>,
+)
+logging.<span class="fn">info</span>(<span class="str">"開始處理 %d 筆"</span>, len(rows))
+logging.<span class="fn">warning</span>(<span class="str">"第 %d 筆缺值，跳過"</span>, i)
+logging.<span class="fn">exception</span>(<span class="str">"處理失敗"</span>)   <span class="cmt"># 在 except 內用，會自動附上 traceback</span></code></pre>
+<div class="tablewrap"><table>
+<thead><tr><th>等級</th><th>什麼時候用</th></tr></thead>
+<tbody>
+<tr><td><code>DEBUG</code></td><td>開發時的細節，正式跑通常關掉</td></tr>
+<tr><td><code>INFO</code></td><td>正常進度：「開始」「處理了 N 筆」「完成」</td></tr>
+<tr><td><code>WARNING</code></td><td>怪但還能繼續：缺值、用了 fallback</td></tr>
+<tr><td><code>ERROR</code> / <code>CRITICAL</code></td><td>這次失敗了 / 整個系統不能運作</td></tr>
+</tbody>
+</table></div>
+<div class="box warn"><div class="t">⚠️ 排程工具的 log 陷阱</div><p>log 檔會<strong>持續長大</strong>，要定期輪替（<code>RotatingFileHandler</code>）或清理。另外別只看 log 尾巴就判斷「這次跑成功」——檔案被開啟也會更新時間，要<strong>比對時間戳或看退出碼</strong>才算數。</p></div>
+
+<h3>③ 設定與機密：跟程式碼分開</h3>
+<div class="box warn"><div class="t">⚠️ 絕不 hardcode 機密</div>
+<p>API key、密碼、token <strong>不要寫在程式碼裡</strong>——它們會跟著進版控、上傳、被分享出去。改放<strong>環境變數</strong>或系統金鑰庫（macOS Keychain），程式用 <code>os.environ["API_KEY"]</code> 動態取。設定值（路徑、門檻）則放 <code>.env</code>／設定檔，並把它加進 <code>.gitignore</code>。</p></div>
+
+<h3>④ 冪等性 (Idempotency)：重跑不會出事</h3>
+<p><strong>冪等</strong>＝同樣的操作做一次和做十次，結果一樣。排程可能因重試、手動補跑而執行多次，不冪等的程式就會產生重複資料。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>不冪等 ❌</th><th>冪等 ✓</th></tr></thead>
+<tbody>
+<tr><td>每次都 append 一列</td><td>先查有沒有這筆 key，有就更新、沒有才新增（upsert）</td></tr>
+<tr><td>直接寄出通知</td><td>先檢查「今天這則寄過沒」（記一份已處理清單）</td></tr>
+<tr><td>餘額 <code>+= 100</code></td><td>設定成「這筆交易的結果值」，或用交易 ID 去重</td></tr>
+</tbody>
+</table></div>
+
+<h3>⑤ 大聲失敗 (Fail Loud)，不要默默錯</h3>
+<pre><span class="label">python</span><code><span class="cmt"># ❌ 最危險的寫法：錯誤被吞掉，你以為一切正常</span>
+<span class="kw">try</span>:
+    price = <span class="fn">fetch_price</span>()
+<span class="kw">except</span>:
+    price = 0          <span class="cmt"># 拿到 0 卻繼續算下去 → 錯誤資料汙染全鏈</span>
+
+<span class="cmt"># ✓ 抓特定例外，處理不了就讓它炸出來（並記錄）</span>
+<span class="kw">try</span>:
+    price = <span class="fn">fetch_price</span>()
+<span class="kw">except</span> TimeoutError:
+    logging.<span class="fn">exception</span>(<span class="str">"取價逾時"</span>)
+    <span class="kw">raise</span>            <span class="cmt"># 讓排程系統知道這次失敗了</span></code></pre>
+<div class="box info"><div class="t">💡 唯一該「靜默失敗」的例外</div><p><strong>監控與記錄本身</strong>不該拖垮被監控的程式——寫統計、送通知這類附屬動作可以包起來忽略錯誤。但<strong>主要業務邏輯絕不要</strong>：資料錯了要立刻知道，比默默產出錯誤結果好得多。</p></div>
+<div class="box tip"><div class="t">✓ 可靠工具檢查清單</div><p>參數化（argparse）· 破壞性操作預設 dry-run · logging 而非 print · 機密走環境變數／Keychain · 重跑安全（冪等）· 失敗大聲 · 有 docstring／README 說明怎麼用。</p></div>
+</section>
+
+<section id="y5">
+<h2 class="sec"><span class="num">29</span>實務陷阱：編碼、時區、浮點數</h2>
+<p>三個「語法都對、程式照跑、結果卻錯」的經典地雷。它們不會報錯，所以特別危險——知道它們存在，就贏了一半。</p>
+
+<h3>① 文字編碼：中文亂碼的根源</h3>
+<p><strong>編碼 (encoding)</strong> 是「文字 ↔ 位元組」的對照規則。用錯規則讀檔，就是滿螢幕亂碼。</p>
+<div class="tablewrap"><table>
+<thead><tr><th>編碼</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td><code>UTF-8</code></td><td>現代標準，涵蓋所有語言。<strong>一律用這個</strong></td></tr>
+<tr><td><code>Big5</code> / <code>cp950</code></td><td>舊繁中編碼，台灣舊系統匯出的檔常見</td></tr>
+<tr><td><code>utf-8-sig</code></td><td>帶 BOM 的 UTF-8；Excel 匯出的 CSV 常是這種</td></tr>
+</tbody>
+</table></div>
+<pre><span class="label">python</span><code><span class="cmt"># 讀檔一律明講編碼，不要靠系統預設（各機器不同）</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">"data.csv"</span>, encoding=<span class="str">"utf-8"</span>)
+df = pd.<span class="fn">read_csv</span>(<span class="str">"舊系統匯出.csv"</span>, encoding=<span class="str">"big5"</span>)      <span class="cmt"># 舊檔</span>
+
+<span class="cmt"># 寫出給 Excel 開的 CSV：要用 utf-8-sig，否則中文會亂碼</span>
+df.<span class="fn">to_csv</span>(<span class="str">"out.csv"</span>, index=False, encoding=<span class="str">"utf-8-sig"</span>)</code></pre>
+<div class="box warn"><div class="t">⚠️ 兩個常見症狀</div>
+<p>讀到 <code>UnicodeDecodeError</code> 或整片亂碼 → <strong>編碼猜錯</strong>，改用 <code>big5</code> 試試。<br>Excel 開你產的 CSV 中文變亂碼 → 寫檔時改成 <code>encoding="utf-8-sig"</code>（加 BOM 讓 Excel 認得）。<br>欄名前面多出看不見的 <code>﻿</code> → 讀檔時用 <code>encoding="utf-8-sig"</code> 把 BOM 吃掉。</p></div>
+
+<h3>② 時區：排程與跨市場資料的隱形殺手</h3>
+<p>Python 的 <code>datetime</code> 分兩種，混用就出錯：</p>
+<ul>
+<li><strong>naive（天真）</strong>：只有日期時間，<strong>不知道自己屬於哪個時區</strong>——<code>datetime.now()</code> 給的就是這種。</li>
+<li><strong>aware（有意識）</strong>：帶時區資訊，可以正確比較與換算。</li>
+</ul>
+<pre><span class="label">python</span><code><span class="kw">from</span> datetime <span class="kw">import</span> datetime, timezone
+<span class="kw">from</span> zoneinfo <span class="kw">import</span> ZoneInfo          <span class="cmt"># Python 3.9+ 內建</span>
+
+now_tw = datetime.<span class="fn">now</span>(<span class="fn">ZoneInfo</span>(<span class="str">"Asia/Taipei"</span>))
+now_ny = now_tw.<span class="fn">astimezone</span>(<span class="fn">ZoneInfo</span>(<span class="str">"America/New_York"</span>))   <span class="cmt"># 正確換算</span>
+
+<span class="cmt"># 儲存與內部運算一律用 UTC，只在顯示時轉成當地時間</span>
+utc_now = datetime.<span class="fn">now</span>(timezone.utc)</code></pre>
+<div class="box warn"><div class="t">⚠️ 三個實際會咬人的地方</div>
+<p>① <strong>naive 和 aware 不能相減</strong>——會直接 <code>TypeError</code>。<br>② <strong>跨市場資料</strong>：台股與美股的「今天」不是同一天，時間戳沒帶時區就會對錯行。<br>③ <strong>日光節約時間 (DST)</strong>：美國夏令／冬令會讓時差在 12 與 13 小時之間跳動——<strong>不要自己加減固定小時數</strong>，一律用 <code>ZoneInfo</code> 換算。<br>原則：<strong>存 UTC、算 UTC、只在顯示時轉當地。</strong></p></div>
+
+<h3>③ 浮點數：0.1 + 0.2 ≠ 0.3</h3>
+<pre><span class="label">python</span><code>&gt;&gt;&gt; 0.1 + 0.2
+0.30000000000000004        <span class="cmt"># 不是 bug，是二進位表示法的先天限制</span>
+&gt;&gt;&gt; 0.1 + 0.2 == 0.3
+False                      <span class="cmt"># 所以浮點數不要用 == 比較</span></code></pre>
+<p>電腦用二進位存小數，就像十進位無法精確表示 1/3 一樣，二進位也無法精確表示 0.1。誤差極小，但<strong>累加幾千次就會浮現</strong>。</p>
+<pre><span class="label">python</span><code><span class="cmt"># ✓ 比較：看差距是否夠小</span>
+<span class="kw">import</span> math
+math.<span class="fn">isclose</span>(0.1 + 0.2, 0.3)          <span class="cmt"># True</span>
+
+<span class="cmt"># ✓ 錢與精確計算：用 Decimal（字串建構，別用 float 建構）</span>
+<span class="kw">from</span> decimal <span class="kw">import</span> Decimal
+<span class="fn">Decimal</span>(<span class="str">"0.1"</span>) + <span class="fn">Decimal</span>(<span class="str">"0.2"</span>)          <span class="cmt"># Decimal('0.3') 精確</span></code></pre>
+<div class="box tip"><div class="t">✓ 判斷準則</div><p><strong>金額、帳務、需要精確對帳</strong>→ 用 <code>Decimal</code>（或以「分」為單位存整數）。<strong>科學計算、統計、量測值</strong>→ 用 float 沒問題（本來就有測量誤差），但比較時用 <code>math.isclose</code> 而非 <code>==</code>。</p></div>
+</section>
 
 <!-- ============================================================= -->
 <!-- 第五部 互動計算器 -->
@@ -2102,6 +2309,90 @@ print(res.p_value)</code></pre>
 <tr><td><code>@</code></td><td>檔案路徑提及，觸發自動完成（如 <code>@ src/main.py</code>）</td></tr>
 <tr><td><code>\ + Enter</code></td><td>輸入換行（多行輸入）</td></tr>
 <tr><td><code>Ctrl+J</code></td><td>輸入換行（任何終端皆可用）</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== CONCURRENCY / CLI / LOGGING ===== -->
+<div class="lookup-block" id="t-ops">
+<h3>並行 · CLI · Logging 速查</h3>
+
+<h4>並行 (concurrent.futures / asyncio)</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>ThreadPoolExecutor(max_workers=8)</code></td><td>執行緒池，IO-bound 首選</td></tr>
+<tr><td><code>ProcessPoolExecutor()</code></td><td>行程池，CPU-bound 用（吃滿多核心）</td></tr>
+<tr><td><code>pool.map(fn, items)</code></td><td>平行套用並依序回傳結果（最常用）</td></tr>
+<tr><td><code>pool.submit(fn, x)</code></td><td>丟單一任務，回傳 future</td></tr>
+<tr><td><code>as_completed(futures)</code></td><td>誰先完成先處理誰</td></tr>
+<tr><td><code>async def</code> / <code>await</code></td><td>定義／等待非同步函式</td></tr>
+<tr><td><code>asyncio.run(main())</code></td><td>啟動 async 程式進入點</td></tr>
+<tr><td><code>asyncio.gather(a, b, c)</code></td><td>多個協程同時跑並等全部完成</td></tr>
+<tr><td><code>threading.Lock()</code></td><td>保護共用資料，防競爭條件</td></tr>
+<tr><td><code>time.sleep()</code> vs <code>asyncio.sleep()</code></td><td>前者會卡住整條線；async 內一定用後者</td></tr>
+</tbody></table></div>
+
+<h4>argparse（命令列參數）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>ArgumentParser(description="...")</code></td><td>建立解析器</td></tr>
+<tr><td><code>add_argument("input")</code></td><td>必填的位置參數</td></tr>
+<tr><td><code>add_argument("--out", default="x")</code></td><td>選填參數＋預設值</td></tr>
+<tr><td><code>add_argument("--apply", action="store_true")</code></td><td>開關旗標（有帶就是 True）</td></tr>
+<tr><td><code>add_argument("--n", type=int)</code></td><td>指定型別自動轉換</td></tr>
+<tr><td><code>add_argument("--mode", choices=["a","b"])</code></td><td>限定可選值</td></tr>
+<tr><td><code>args = ap.parse_args()</code></td><td>解析；<code>-h</code> 自動產生說明</td></tr>
+</tbody></table></div>
+
+<h4>logging（記錄）</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>logging.basicConfig(level=, format=, filename=)</code></td><td>一次設定等級／格式／輸出檔</td></tr>
+<tr><td><code>logging.debug/info/warning/error/critical()</code></td><td>五種嚴重等級</td></tr>
+<tr><td><code>logging.exception("失敗")</code></td><td>在 except 內用，自動附 traceback</td></tr>
+<tr><td><code>logger = logging.getLogger(__name__)</code></td><td>模組專屬 logger（大型專案用）</td></tr>
+<tr><td><code>RotatingFileHandler(maxBytes=, backupCount=)</code></td><td>log 自動輪替，防檔案無限長大</td></tr>
+<tr><td><code>%(asctime)s %(levelname)s %(message)s</code></td><td>常用格式：時間＋等級＋訊息</td></tr>
+</tbody></table></div>
+
+<h4>環境變數與退出碼</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>os.environ["API_KEY"]</code></td><td>讀環境變數（缺少會報錯，適合必要值）</td></tr>
+<tr><td><code>os.environ.get("X", "預設")</code></td><td>讀環境變數，缺少則用預設</td></tr>
+<tr><td><code>sys.exit(0)</code> / <code>sys.exit(1)</code></td><td>成功 / 失敗退出（排程系統看這個判定）</td></tr>
+<tr><td><code>if __name__ == "__main__":</code></td><td>只有直接執行才跑，被 import 時不跑</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- ===== ENCODING / TIME / NUMBERS ===== -->
+<div class="lookup-block" id="t-traps">
+<h3>編碼 · 時區 · 數值速查</h3>
+
+<h4>文字編碼</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法 / 情境</th><th>說明</th></tr></thead><tbody>
+<tr><td><code>encoding="utf-8"</code></td><td>預設就用這個（現代標準）</td></tr>
+<tr><td><code>encoding="big5"</code> / <code>cp950</code></td><td>台灣舊系統匯出的繁中檔</td></tr>
+<tr><td><code>encoding="utf-8-sig"</code></td><td>寫給 Excel 開的 CSV（含 BOM，中文才不亂碼）</td></tr>
+<tr><td><code>UnicodeDecodeError</code></td><td>編碼猜錯 → 換成 big5 試</td></tr>
+<tr><td><code>errors="ignore"</code> / <code>"replace"</code></td><td>忽略／替換無法解碼的字（最後手段）</td></tr>
+<tr><td><code>s.encode("utf-8")</code> / <code>b.decode("utf-8")</code></td><td>字串 → 位元組 / 位元組 → 字串</td></tr>
+</tbody></table></div>
+
+<h4>時區與時間</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>from zoneinfo import ZoneInfo</code></td><td>內建時區庫（Python 3.9+）</td></tr>
+<tr><td><code>datetime.now(ZoneInfo("Asia/Taipei"))</code></td><td>取得帶時區的當地時間</td></tr>
+<tr><td><code>datetime.now(timezone.utc)</code></td><td>取得 UTC 時間（儲存用這個）</td></tr>
+<tr><td><code>dt.astimezone(ZoneInfo("America/New_York"))</code></td><td>正確換算時區（自動處理 DST）</td></tr>
+<tr><td><code>dt.isoformat()</code> / <code>fromisoformat(s)</code></td><td>標準字串格式互轉（推薦的交換格式）</td></tr>
+<tr><td><code>time.perf_counter()</code></td><td>量測耗時用（不受系統時間調整影響）</td></tr>
+<tr><td>⚠️ naive vs aware</td><td>沒帶時區的 datetime 不能與帶時區的相減</td></tr>
+</tbody></table></div>
+
+<h4>數值精度</h4>
+<div class="tablewrap"><table class="lookup"><thead><tr><th>寫法</th><th>作用</th></tr></thead><tbody>
+<tr><td><code>math.isclose(a, b)</code></td><td>浮點數比較用這個，不要用 <code>==</code></td></tr>
+<tr><td><code>Decimal("0.1")</code></td><td>精確十進位；金額用（<b>用字串建構</b>）</td></tr>
+<tr><td><code>round(x, 2)</code></td><td>四捨五入到 2 位（採銀行家捨入）</td></tr>
+<tr><td><code>float("inf")</code> / <code>math.isnan(x)</code></td><td>無限大 / 判斷是否為 NaN</td></tr>
+<tr><td>⚠️ <code>NaN != NaN</code></td><td>NaN 不等於自己，只能用 <code>isnan()</code> 判斷</td></tr>
+<tr><td><code>//</code> 與 <code>%</code></td><td>整數除法與餘數（避免浮點誤差）</td></tr>
 </tbody></table></div>
 </div>
 
